@@ -38,6 +38,3 @@ indent_style = space
 indent_size = 4
 space_redirects = true
 simplify = true
-
-[*.{kt,kts}]
-indent_size = 4
