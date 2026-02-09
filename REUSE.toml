@@ -18,3 +18,9 @@ path = [
   "README.md"
 ]
 precedence = "aggregate"
+
+[[annotations]]
+SPDX-FileCopyrightText = "2007-2023 Gradle, Inc."
+SPDX-License-Identifier = "Apache-2.0"
+path = "gradle/wrapper/**"
+precedence = "aggregate"
