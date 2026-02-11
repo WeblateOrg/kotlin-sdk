@@ -2,7 +2,6 @@
 # SPDX-FileCopyrightText: 2026 Aayush Gupta <https://aayush.io>
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-
 # This file describes the licensing and copyright situation for files that
 # cannot be annotated directly, for example because of being simply
 # uncommentable. Unless this is the case, a file should be annotated directly.
@@ -12,10 +11,10 @@
 version = 1
 
 [[annotations]]
-path = [
-  ".gitignore",
-  "README.md",
-]
-precedence = "aggregate"
 SPDX-FileCopyrightText = "2026 Aayush Gupta <https://aayush.io>"
 SPDX-License-Identifier = "GPL-3.0-or-later"
+path = [
+  ".gitignore",
+  "README.md"
+]
+precedence = "aggregate"

@@ -1,3 +1,7 @@
+# Copyright © Michal Čihař <michal@weblate.org>
+#
+# SPDX-License-Identifier: CC0-1.0
+#
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
@@ -10,22 +14,12 @@ repos:
   - id: check-toml
   - id: check-merge-conflict
   - id: check-json
-  - id: mixed-line-ending
-    args: [--fix=lf]
   - id: pretty-format-json
     args: [--no-sort-keys, --autofix, --no-ensure-ascii]
 - repo: https://github.com/adrienverge/yamllint
   rev: v1.37.1
   hooks:
   - id: yamllint
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.10
-  hooks:
-  - id: ruff-check
-    args:
-    - --fix
-    - --exit-non-zero-on-fix
-  - id: ruff-format
 - repo: meta
   hooks:
   - id: check-hooks-apply
@@ -43,13 +37,6 @@ repos:
   - id: mdformat
     additional_dependencies:
     - mdformat-gfm==1.0.0
-- repo: https://github.com/biomejs/pre-commit
-  rev: v2.3.10
-  hooks:
-  - id: biome-check
-    additional_dependencies:
-    - '@biomejs/biome@2.3.10'
-    types_or: [javascript]
 - repo: https://github.com/igorshubovych/markdownlint-cli
   rev: v0.47.0
   hooks:
@@ -72,11 +59,6 @@ repos:
   hooks:
   - id: renovate-config-validator
     args: [--strict]
-- repo: https://github.com/scop/pre-commit-shfmt
-  rev: v3.12.0-2
-  hooks:
-  - id: shfmt
-    args: [--write]
 - repo: https://github.com/zizmorcore/zizmor-pre-commit
   rev: v1.22.0
   hooks:
@@ -85,7 +67,6 @@ repos:
   rev: v1.77.0
   hooks:
   - id: kingfisher-auto
-exclude: ^.github/ISSUE_TEMPLATE/snippets/.*$
 ci:
   autoupdate_schedule: quarterly
   skip:
