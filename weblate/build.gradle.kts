@@ -12,13 +12,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.ktlint)
 }
 
-tasks.withType(KotlinJvmCompile::class).configureEach {
+tasks.withType<KotlinJvmCompile>().configureEach {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_1_8
+        jvmTarget = JvmTarget.JVM_11
     }
 }
 
@@ -30,8 +30,8 @@ kotlin {
         enabled = true
     }
 
-    androidLibrary {
-        namespace = "org.weblate"
+    android {
+        namespace = "org.weblate.sdk"
         compileSdk = 36
         minSdk = 21
     }
@@ -48,6 +48,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.ktor.client.auth)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)

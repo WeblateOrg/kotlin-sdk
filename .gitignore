@@ -30,6 +30,7 @@ replay_pid*
 *.iml
 .kotlin
 .gradle
+gradle/gradle-daemon-jvm.properties
 **/build/
 xcuserdata
 !src/**/build/
