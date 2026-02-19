@@ -25,4 +25,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Weblate"
-include(":weblate")
+include(":weblate", ":sample")

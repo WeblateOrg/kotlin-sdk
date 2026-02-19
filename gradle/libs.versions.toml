@@ -7,6 +7,7 @@
 jetbrains-coroutines-android = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines"}
 jetbrains-coroutines-core = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
 jetbrains-kotlin-test = {module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin"}
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-core = {module = "io.ktor:ktor-client-core", version.ref = "ktor"}
 ktor-client-darwin = {module = "io.ktor:ktor-client-darwin", version.ref = "ktor"}
 ktor-client-okhttp = {module = "io.ktor:ktor-client-okhttp", version.ref = "ktor"}
@@ -15,6 +16,7 @@ ktor-serialization-json = {module = "io.ktor:ktor-serialization-kotlinx-json", v
 touchlab-kermit = {module = "co.touchlab:kermit", version.ref = "kermit"}
 
 [plugins]
+android-app = { id = "com.android.application", version.ref = "agp" }
 android-library = {id = "com.android.kotlin.multiplatform.library", version.ref = "agp"}
 kotlin-multiplatform = {id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin"}
 ktlint = {id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint"}
