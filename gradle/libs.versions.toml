@@ -3,26 +3,46 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
-[libraries]
-jetbrains-coroutines-android = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines"}
-jetbrains-coroutines-core = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
-jetbrains-kotlin-test = {module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin"}
-ktor-client-core = {module = "io.ktor:ktor-client-core", version.ref = "ktor"}
-ktor-client-darwin = {module = "io.ktor:ktor-client-darwin", version.ref = "ktor"}
-ktor-client-okhttp = {module = "io.ktor:ktor-client-okhttp", version.ref = "ktor"}
-ktor-content-negotiation = {module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor"}
-ktor-serialization-json = {module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor"}
-touchlab-kermit = {module = "co.touchlab:kermit", version.ref = "kermit"}
-
-[plugins]
-android-library = {id = "com.android.kotlin.multiplatform.library", version.ref = "agp"}
-kotlin-multiplatform = {id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin"}
-ktlint = {id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint"}
-
 [versions]
 agp = "9.1.0"
+compose = "1.10.3"
 coroutines = "1.10.2"
+io = "0.9.0"
 kermit = "2.1.0"
 kotlin = "2.3.20"
 ktlint = "14.2.0"
 ktor = "3.4.2"
+lifecycle = "2.10.0"
+material3 = "1.10.0-alpha05"
+startup = "1.2.0"
+
+[libraries]
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startup" }
+jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
+jetbrains-compose-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose" }
+jetbrains-compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
+jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
+jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
+jetbrains-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+jetbrains-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+jetbrains-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+jetbrains-kotlin-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "io" }
+jetbrains-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+jetbrains-lifecycle-runtime = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+
+[plugins]
+android-app = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
