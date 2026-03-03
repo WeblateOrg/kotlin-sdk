@@ -20,7 +20,7 @@ kotlin-multiplatform = {id = "org.jetbrains.kotlin.multiplatform", version.ref =
 ktlint = {id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint"}
 
 [versions]
-agp = "9.0.1"
+agp = "9.1.0"
 coroutines = "1.10.2"
 kermit = "2.1.0"
 kotlin = "2.3.10"
