@@ -23,6 +23,6 @@ ktlint = {id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint"}
 agp = "9.1.0"
 coroutines = "1.10.2"
 kermit = "2.1.0"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 ktlint = "14.2.0"
 ktor = "3.4.1"
