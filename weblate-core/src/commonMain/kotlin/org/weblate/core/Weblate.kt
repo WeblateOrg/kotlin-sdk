@@ -10,6 +10,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
@@ -31,6 +32,7 @@ public class Weblate(
     private val authClient = HttpClient {
         defaultRequest { url(BASE_URL) }
         install(ContentNegotiation) { json(json) }
+        install(HttpCache)
         install(Auth) {
             bearer {
                 loadTokens {
