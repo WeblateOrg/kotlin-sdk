@@ -23,20 +23,25 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.Json
+import org.weblate.core.path.DefaultPlatformPath
 import org.weblate.core.path.PathUtils
+import org.weblate.core.path.PlatformPath
 
 /**
  * Primary way to interact and configure the Weblate SDK
  * @property project Project URL slug
  * @property component Component URL slug
  * @property authToken Authentication token to interact with the API
+ * @property platformPath Path for cache and user directory to store data
  */
 public class Weblate(
     public val project: String,
     public val component: String,
-    private val authToken: String
+    private val authToken: String,
+    private val platformPath: PlatformPath = DefaultPlatformPath
 ) {
 
+    private val pathUtils = PathUtils(platformPath)
     private val authClient = HttpClient {
         defaultRequest { url(BASE_URL) }
         install(ContentNegotiation) { json(json) }
@@ -67,7 +72,7 @@ public class Weblate(
     public suspend fun saveTranslation(languageCode: String): Path = authClient
         .prepareGet(urlString = "$$BASE_URL/translations/$project/$component/$languageCode/file/")
         .execute { response ->
-            val filePath = Path(PathUtils.getTranslationsDir(languageCode), "strings.xml")
+            val filePath = Path(pathUtils.getTranslationsDir(languageCode), "strings.xml")
             SystemFileSystem.sink(filePath).buffered().use { sink ->
                 response.bodyAsChannel().copyAndClose(sink.asByteWriteChannel())
             }

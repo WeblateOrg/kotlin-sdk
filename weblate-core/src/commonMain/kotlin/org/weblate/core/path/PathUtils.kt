@@ -8,26 +8,21 @@ package org.weblate.core.path
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 
-internal object PathUtils {
+internal class PathUtils(private val platformPath: PlatformPath) {
 
-    private const val DIR_WEBLATE = "weblate"
-    private const val DIR_TRANSLATIONS = "translations"
-
-    fun getCacheDir(): Path {
-        val path = Path(PlatformPath.cacheDir, DIR_WEBLATE)
-        SystemFileSystem.createDirectories(path)
-        return path
-    }
-
-    fun getUserDir(): Path {
-        val path = Path(PlatformPath.userDir, DIR_WEBLATE)
-        SystemFileSystem.createDirectories(path)
-        return path
+    init {
+        listOf(platformPath.cacheDir, platformPath.userDir).forEach { path ->
+            SystemFileSystem.createDirectories(path)
+        }
     }
 
     fun getTranslationsDir(languageCode: String): Path {
-        val path = Path(getUserDir(), DIR_TRANSLATIONS, languageCode)
+        val path = Path(platformPath.userDir, DIR_TRANSLATIONS, languageCode)
         SystemFileSystem.createDirectories(path)
         return path
+    }
+
+    companion object {
+        private const val DIR_TRANSLATIONS = "translations"
     }
 }

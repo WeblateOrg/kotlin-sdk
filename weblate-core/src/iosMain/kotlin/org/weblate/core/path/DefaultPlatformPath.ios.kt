@@ -6,28 +6,31 @@
 package org.weblate.core.path
 
 import kotlinx.io.files.Path
+import org.weblate.core.Constants.DIR_WEBLATE
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 
-internal actual object PlatformPath {
+internal actual object DefaultPlatformPath : PlatformPath {
 
-    actual val cacheDir: Path
+    actual override val cacheDir: Path
         get() = Path(
             NSSearchPathForDirectoriesInDomains(
                 NSCachesDirectory,
                 NSUserDomainMask,
                 true
-            ).first() as String
+            ).first() as String,
+            DIR_WEBLATE
         )
 
-    actual val userDir: Path
+    actual override val userDir: Path
         get() = Path(
             NSSearchPathForDirectoriesInDomains(
                 NSDocumentDirectory,
                 NSUserDomainMask,
                 true
-            ).first() as String
+            ).first() as String,
+            DIR_WEBLATE
         )
 }
