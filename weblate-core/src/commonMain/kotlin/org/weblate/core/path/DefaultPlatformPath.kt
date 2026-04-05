@@ -8,9 +8,9 @@ package org.weblate.core.path
 import kotlinx.io.files.Path
 
 /**
- * Path to store files
+ * Default path to store files
  */
-public interface PlatformPath {
-    public val cacheDir: Path
-    public val userDir: Path
+internal expect object DefaultPlatformPath : PlatformPath {
+    override val cacheDir: Path
+    override val userDir: Path
 }
