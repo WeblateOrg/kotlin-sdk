@@ -23,6 +23,7 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.Json
+import org.weblate.core.annotation.ExperimentalWeblateApi
 import org.weblate.core.path.DefaultPlatformPath
 import org.weblate.core.path.PathUtils
 import org.weblate.core.path.PlatformPath
@@ -34,6 +35,7 @@ import org.weblate.core.path.PlatformPath
  * @property authToken Authentication token to interact with the API
  * @property platformPath Path for cache and user directory to store data
  */
+@ExperimentalWeblateApi
 public class Weblate(
     public val project: String,
     public val component: String,
