@@ -14,8 +14,16 @@ import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.get
+import io.ktor.client.request.prepareGet
+import io.ktor.client.statement.bodyAsChannel
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.utils.io.asByteWriteChannel
+import io.ktor.utils.io.copyAndClose
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.Json
+import org.weblate.core.path.PathUtils
 
 /**
  * Primary way to interact and configure the Weblate SDK
@@ -44,12 +52,27 @@ public class Weblate(
 
     /**
      * Downloads the translation file for given language
-     * @param code Language code for weblate for a particular locale
+     * @param languageCode Language code for weblate for a particular locale
      * @return [ByteArray] for further parsing based on platform-specific parser as needed
      */
-    public suspend fun getTranslationForLanguage(code: String): ByteArray = authClient
-        .get(urlString = "$$BASE_URL/translations/$project/$component/$code/file/")
+    public suspend fun getTranslation(languageCode: String): ByteArray = authClient
+        .get(urlString = "$$BASE_URL/translations/$project/$component/$languageCode/file/")
         .body()
+
+    /**
+     * Saves translations to the user's data directory for the given language
+     * @param languageCode Language code for weblate for a particular locale
+     * @return [Path] for the downloaded file
+     */
+    public suspend fun saveTranslation(languageCode: String): Path = authClient
+        .prepareGet(urlString = "$$BASE_URL/translations/$project/$component/$languageCode/file/")
+        .execute { response ->
+            val filePath = Path(PathUtils.getTranslationsDir(languageCode), "strings.xml")
+            SystemFileSystem.sink(filePath).buffered().use { sink ->
+                response.bodyAsChannel().copyAndClose(sink.asByteWriteChannel())
+            }
+            return@execute filePath
+        }
 
     public companion object {
         private const val BASE_URL = "https://hosted.weblate.org/api"
