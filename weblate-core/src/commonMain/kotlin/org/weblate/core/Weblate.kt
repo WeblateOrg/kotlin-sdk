@@ -17,6 +17,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.kotlinx.xml.xml
 import io.ktor.utils.io.asByteWriteChannel
 import io.ktor.utils.io.copyAndClose
 import kotlinx.io.buffered
@@ -46,7 +47,10 @@ public class Weblate(
     private val pathUtils = PathUtils(platformPath)
     private val authClient = HttpClient {
         defaultRequest { url(BASE_URL) }
-        install(ContentNegotiation) { json(json) }
+        install(ContentNegotiation) {
+            json(json)
+            xml()
+        }
         install(HttpCache)
         install(Auth) {
             bearer {
@@ -63,7 +67,7 @@ public class Weblate(
      * @return [ByteArray] for further parsing based on platform-specific parser as needed
      */
     public suspend fun getTranslation(languageCode: String): ByteArray = authClient
-        .get(urlString = "$$BASE_URL/translations/$project/$component/$languageCode/file/")
+        .get(urlString = "$BASE_URL/translations/$project/$component/$languageCode/file/")
         .body()
 
     /**
@@ -72,7 +76,7 @@ public class Weblate(
      * @return [Path] for the downloaded file
      */
     public suspend fun saveTranslation(languageCode: String): Path = authClient
-        .prepareGet(urlString = "$$BASE_URL/translations/$project/$component/$languageCode/file/")
+        .prepareGet(urlString = "$BASE_URL/translations/$project/$component/$languageCode/file/")
         .execute { response ->
             val filePath = Path(pathUtils.getTranslationsDir(languageCode), "strings.xml")
             SystemFileSystem.sink(filePath).buffered().use { sink ->
