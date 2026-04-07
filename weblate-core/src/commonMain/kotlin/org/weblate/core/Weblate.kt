@@ -6,14 +6,12 @@
 package org.weblate.core
 
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.get
 import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.serialization.kotlinx.json.json
@@ -25,28 +23,25 @@ import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.Json
 import org.weblate.core.annotation.ExperimentalWeblateApi
+import org.weblate.core.configuration.Instance
 import org.weblate.core.path.DefaultPlatformPath
 import org.weblate.core.path.PathUtils
 import org.weblate.core.path.PlatformPath
 
 /**
  * Primary way to interact and configure the Weblate SDK
- * @property project Project URL slug
- * @property component Component URL slug
- * @property authToken Authentication token to interact with the API
+ * @property instance Weblate instance's configuration
  * @property platformPath Path for cache and user directory to store data
  */
 @ExperimentalWeblateApi
 public class Weblate(
-    public val project: String,
-    public val component: String,
-    private val authToken: String,
+    private val instance: Instance,
     private val platformPath: PlatformPath = DefaultPlatformPath
 ) {
 
     private val pathUtils = PathUtils(platformPath)
     private val authClient = HttpClient {
-        defaultRequest { url(BASE_URL) }
+        defaultRequest { url(instance.baseUrl) }
         install(ContentNegotiation) {
             json(json)
             xml()
@@ -55,20 +50,11 @@ public class Weblate(
         install(Auth) {
             bearer {
                 loadTokens {
-                    BearerTokens(accessToken = authToken, refreshToken = null)
+                    BearerTokens(accessToken = instance.authToken, refreshToken = null)
                 }
             }
         }
     }
-
-    /**
-     * Downloads the translation file for given language
-     * @param languageCode Language code for weblate for a particular locale
-     * @return [ByteArray] for further parsing based on platform-specific parser as needed
-     */
-    public suspend fun getTranslation(languageCode: String): ByteArray = authClient
-        .get(urlString = "$BASE_URL/translations/$project/$component/$languageCode/file/")
-        .body()
 
     /**
      * Saves translations to the user's data directory for the given language
@@ -76,7 +62,7 @@ public class Weblate(
      * @return [Path] for the downloaded file
      */
     public suspend fun saveTranslation(languageCode: String): Path = authClient
-        .prepareGet(urlString = "$BASE_URL/translations/$project/$component/$languageCode/file/")
+        .prepareGet("translations/${instance.project}/${instance.component}/$languageCode/file/")
         .execute { response ->
             val filePath = Path(pathUtils.getTranslationsDir(languageCode), "strings.xml")
             SystemFileSystem.sink(filePath).buffered().use { sink ->
@@ -86,8 +72,6 @@ public class Weblate(
         }
 
     public companion object {
-        private const val BASE_URL = "https://hosted.weblate.org/api"
-
         private val json = Json {
             prettyPrint = true
             ignoreUnknownKeys = true
