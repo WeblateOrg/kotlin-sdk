@@ -1,0 +1,41 @@
+public final class org/weblate/core/Weblate {
+	public static final field Companion Lorg/weblate/core/Weblate$Companion;
+	public fun <init> (Lorg/weblate/core/configuration/Instance;Lorg/weblate/core/path/PlatformPath;)V
+	public synthetic fun <init> (Lorg/weblate/core/configuration/Instance;Lorg/weblate/core/path/PlatformPath;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun saveTranslation (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/weblate/core/Weblate$Companion {
+}
+
+public abstract interface annotation class org/weblate/core/annotation/ExperimentalWeblateApi : java/lang/annotation/Annotation {
+}
+
+public final class org/weblate/core/configuration/Instance {
+	public static final field Companion Lorg/weblate/core/configuration/Instance$Companion;
+	public static final field DEFAULT_SERVER_URL Ljava/lang/String;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAuthToken ()Ljava/lang/String;
+	public final fun getComponent ()Ljava/lang/String;
+	public final fun getProject ()Ljava/lang/String;
+	public final fun getServerUrl ()Ljava/lang/String;
+}
+
+public final class org/weblate/core/configuration/Instance$Companion {
+}
+
+public abstract interface class org/weblate/core/database/WeblateDB : app/cash/sqldelight/Transacter {
+	public static final field Companion Lorg/weblate/core/database/WeblateDB$Companion;
+}
+
+public final class org/weblate/core/database/WeblateDB$Companion {
+	public final fun getSchema ()Lapp/cash/sqldelight/db/SqlSchema;
+	public final fun invoke (Lapp/cash/sqldelight/db/SqlDriver;)Lorg/weblate/core/database/WeblateDB;
+}
+
+public abstract interface class org/weblate/core/path/PlatformPath {
+	public abstract fun getCacheDir ()Lkotlinx/io/files/Path;
+	public abstract fun getUserDir ()Lkotlinx/io/files/Path;
+}
+
