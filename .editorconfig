@@ -50,3 +50,7 @@ ktlint_standard_function-expression-body = disabled
 ktlint_standard_mixed-condition-operators = disabled
 ktlint_standard_package-name = disabled
 ktlint_standard_property-naming = disabled
+
+# Ignore SQLDelight generated files
+[**/build/generated/sqldelight/**]
+ktlint = disabled

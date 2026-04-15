@@ -19,6 +19,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.sqldelight)
     `maven-publish`
     signing
 }
@@ -67,20 +68,33 @@ kotlin {
             implementation(libs.jetbrains.coroutines.core)
             implementation(libs.touchlab.kermit)
             api(libs.jetbrains.kotlin.io)
+            implementation(libs.cash.sqldelight.runtime)
+            implementation(libs.pdvrieze.xmlutil.serialization)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.jetbrains.coroutines.android)
             implementation(libs.androidx.startup.runtime)
+            implementation(libs.cash.sqldelight.android)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.cash.sqldelight.native)
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.apache5)
+            implementation(libs.cash.sqldelight.sqlite)
         }
         commonTest.dependencies {
             implementation(libs.jetbrains.kotlin.test)
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        register("WeblateDB") {
+            packageName.set("org.weblate.core.database")
         }
     }
 }
