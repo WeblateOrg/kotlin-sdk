@@ -16,11 +16,10 @@ internal object AppContextWrapper {
 internal class ContextInitializer : Initializer<Context> {
     private var appContext: Context? = null
 
-    override fun create(context: Context): Context =
-        context.applicationContext.also {
-            appContext = it
-            AppContextWrapper.appContext = it
-        }
+    override fun create(context: Context): Context = context.applicationContext.also {
+        appContext = it
+        AppContextWrapper.appContext = it
+    }
 
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 }
