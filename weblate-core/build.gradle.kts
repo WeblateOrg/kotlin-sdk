@@ -38,7 +38,7 @@ kotlin {
 
     android {
         namespace = "org.weblate.core"
-        compileSdk = 36
+        compileSdk = 37
         minSdk = 21
     }
 
