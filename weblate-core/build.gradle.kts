@@ -52,6 +52,7 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)
+            implementation(libs.ktor.serialization.xml)
             implementation(libs.jetbrains.coroutines.core)
             implementation(libs.touchlab.kermit)
             implementation(libs.jetbrains.kotlin.io)
@@ -63,6 +64,9 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+        }
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.apache5)
         }
         commonTest.dependencies {
             implementation(libs.jetbrains.kotlin.test)
