@@ -6,7 +6,7 @@
 [versions]
 agp = "9.2.1"
 compose = "1.10.3"
-coroutines = "1.10.2"
+coroutines = "1.11.0"
 io = "0.9.0"
 kermit = "2.1.0"
 kotlin = "2.3.21"
