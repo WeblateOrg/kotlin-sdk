@@ -12,7 +12,7 @@ package org.weblate.core.configuration
  * @property authToken Authentication token to interact with the API
  * @property serverUrl URL of the Weblate server, defaults to `https://hosted.weblate.org`
  */
-public class Instance(
+public class InstanceConfiguration(
     public val project: String,
     public val component: String,
     public val authToken: String,

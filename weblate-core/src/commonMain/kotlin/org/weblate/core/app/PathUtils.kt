@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package org.weblate.core.path
+package org.weblate.core.app
 
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 
-internal class PathUtils(private val platformPath: PlatformPath) {
+internal class PathUtils(private val appConfiguration: AppConfiguration) {
 
     init {
-        listOf(platformPath.cacheDir, platformPath.userDir).forEach { path ->
+        listOf(appConfiguration.cacheDir, appConfiguration.userDir).forEach { path ->
             SystemFileSystem.createDirectories(path)
         }
     }
 
     fun getTranslationsDir(languageCode: String): Path {
-        val path = Path(platformPath.userDir, DIR_TRANSLATIONS, languageCode)
+        val path = Path(appConfiguration.userDir, DIR_TRANSLATIONS, languageCode)
         SystemFileSystem.createDirectories(path)
         return path
     }

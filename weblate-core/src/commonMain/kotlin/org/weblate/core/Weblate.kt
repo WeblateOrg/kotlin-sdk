@@ -23,23 +23,22 @@ import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.Json
 import org.weblate.core.annotation.ExperimentalWeblateApi
-import org.weblate.core.configuration.Instance
-import org.weblate.core.path.DefaultPlatformPath
-import org.weblate.core.path.PathUtils
-import org.weblate.core.path.PlatformPath
+import org.weblate.core.configuration.InstanceConfiguration
+import org.weblate.core.app.PathUtils
+import org.weblate.core.app.AppConfiguration
 
 /**
  * Primary way to interact and configure the Weblate SDK
  * @property instance Weblate instance's configuration
- * @property platformPath Path for cache and user directory to store data
+ * @property app Configuration for the app
  */
 @ExperimentalWeblateApi
 public class Weblate(
-    private val instance: Instance,
-    private val platformPath: PlatformPath = DefaultPlatformPath
+    private val instance: InstanceConfiguration,
+    private val app: AppConfiguration
 ) {
 
-    private val pathUtils = PathUtils(platformPath)
+    private val pathUtils = PathUtils(app)
     private val authClient = HttpClient {
         defaultRequest { url(instance.baseUrl) }
         install(ContentNegotiation) {

@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package org.weblate.core.path
+package org.weblate.core.app
 
 import kotlinx.io.files.Path
 
 /**
- * Path to store files
+ * Configuration related to app required by the library to store files
  */
-public interface PlatformPath {
+public interface AppConfiguration {
+    public val appName: String
     public val cacheDir: Path
     public val userDir: Path
 }
