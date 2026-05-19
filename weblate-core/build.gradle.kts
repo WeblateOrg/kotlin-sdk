@@ -38,8 +38,14 @@ kotlin {
 
     android {
         namespace = "org.weblate.core"
-        compileSdk = 36
-        minSdk = 21
+        compileSdk {
+            version = release(37) {
+                minorApiLevel = 0
+            }
+        }
+        minSdk {
+            version = release(21)
+        }
     }
 
     jvm()
