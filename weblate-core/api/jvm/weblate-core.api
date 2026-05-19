@@ -38,4 +38,3 @@ public abstract interface class org/weblate/core/path/PlatformPath {
 	public abstract fun getCacheDir ()Lkotlinx/io/files/Path;
 	public abstract fun getUserDir ()Lkotlinx/io/files/Path;
 }
-
