@@ -5,7 +5,7 @@
 
 [versions]
 agp = "9.2.1"
-compose = "1.11.0"
+compose = "1.11.1"
 coroutines = "1.11.0"
 io = "0.9.0"
 kermit = "2.1.0"
