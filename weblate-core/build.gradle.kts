@@ -32,9 +32,7 @@ kotlin {
         )
     }
 
-    abiValidation {
-        enabled = true
-    }
+    abiValidation()
 
     android {
         namespace = "org.weblate.core"
