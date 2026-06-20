@@ -10,10 +10,17 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
+val signingKey: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY")
+val signingPassword: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY_PASSWORD")
+val shouldSignRelease: Boolean
+    get() = !signingKey.isNullOrEmpty() && !signingPassword.isNullOrEmpty()
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.multiplatform)
     alias(libs.plugins.ktlint)
+    `maven-publish`
+    signing
 }
 
 tasks.withType<KotlinJvmCompile>().configureEach {
@@ -76,4 +83,72 @@ kotlin {
             implementation(libs.jetbrains.kotlin.test)
         }
     }
+}
+
+// Run "./gradlew publishAllPublicationToLocalRepository" to generate release JARs/klibs locally
+publishing {
+    publications {
+        val artifactVersion = "1.0.0"
+        group = "org.weblate"
+
+        publications.withType<MavenPublication> {
+            pom {
+                name = "Weblate"
+                description = "A library for syncing localizations directly into apps"
+                url = "https://github.com/WeblateOrg/kotlin-sdk"
+
+                licenses {
+                    license {
+                        name = "Apache License 2.0"
+                        url = "https://www.apache.org/licenses/LICENSE-2.0"
+                    }
+                }
+
+                scm {
+                    url = "https://github.com/WeblateOrg/kotlin-sdk"
+                    connection = "scm:git:git@github.com:WeblateOrg/kotlin-sdk.git"
+                    developerConnection = "scm:git:git@github.com:WeblateOrg/kotlin-sdk.git"
+                }
+
+                developers {
+                    developer {
+                        id = "weblate"
+                        name = "Weblate"
+                        email = "info@weblate.org"
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = "centralSnapshot"
+                version = "$artifactVersion-SNAPSHOT"
+                url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+                credentials {
+                    username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
+                    password = System.getenv("SONATYPE_MAVEN_CENTRAL_PASSWORD")
+                }
+            }
+            maven {
+                name = "centralRelease"
+                version = "$artifactVersion-alpha01"
+                url = uri("https://central.sonatype.com/api/v1/publisher/deployments/download/")
+                credentials {
+                    username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
+                    password = System.getenv("SONATYPE_MAVEN_CENTRAL_PASSWORD")
+                }
+            }
+            maven {
+                name = "local"
+                url = uri(layout.buildDirectory.dir("maven"))
+            }
+        }
+    }
+}
+
+signing {
+    isRequired = shouldSignRelease
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications)
 }
