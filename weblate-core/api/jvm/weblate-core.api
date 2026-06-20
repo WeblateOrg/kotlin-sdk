@@ -25,15 +25,6 @@ public final class org/weblate/core/configuration/Instance {
 public final class org/weblate/core/configuration/Instance$Companion {
 }
 
-public abstract interface class org/weblate/core/database/WeblateDB : app/cash/sqldelight/Transacter {
-	public static final field Companion Lorg/weblate/core/database/WeblateDB$Companion;
-}
-
-public final class org/weblate/core/database/WeblateDB$Companion {
-	public final fun getSchema ()Lapp/cash/sqldelight/db/SqlSchema;
-	public final fun invoke (Lapp/cash/sqldelight/db/SqlDriver;)Lorg/weblate/core/database/WeblateDB;
-}
-
 public abstract interface class org/weblate/core/path/PlatformPath {
 	public abstract fun getCacheDir ()Lkotlinx/io/files/Path;
 	public abstract fun getUserDir ()Lkotlinx/io/files/Path;

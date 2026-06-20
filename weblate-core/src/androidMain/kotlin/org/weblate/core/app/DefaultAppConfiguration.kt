@@ -3,17 +3,26 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package org.weblate.core.path
+package org.weblate.core.app
 
 import kotlinx.io.files.Path
 import org.weblate.core.Constants.DIR_WEBLATE
 import org.weblate.core.utils.AppContextWrapper
 
-internal actual object DefaultPlatformPath : PlatformPath {
+/**
+ * Default app's configuration provider for Android
+ */
+internal object DefaultAppConfiguration : AppConfiguration {
 
-    actual override val cacheDir: Path
+    override val appName: String
+        get() {
+            val context = AppContextWrapper.appContext!!
+            return context.applicationInfo.loadLabel(context.packageManager).toString()
+        }
+
+    override val cacheDir: Path
         get() = Path(AppContextWrapper.appContext!!.cacheDir.absolutePath, DIR_WEBLATE)
 
-    actual override val userDir: Path
+    override val userDir: Path
         get() = Path(AppContextWrapper.appContext!!.filesDir.absolutePath, DIR_WEBLATE)
 }

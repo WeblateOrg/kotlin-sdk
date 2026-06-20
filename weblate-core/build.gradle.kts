@@ -32,9 +32,7 @@ kotlin {
         )
     }
 
-    abiValidation {
-        enabled = true
-    }
+    abiValidation()
 
     android {
         namespace = "org.weblate.core"
@@ -61,7 +59,7 @@ kotlin {
             implementation(libs.ktor.serialization.xml)
             implementation(libs.jetbrains.coroutines.core)
             implementation(libs.touchlab.kermit)
-            implementation(libs.jetbrains.kotlin.io)
+            api(libs.jetbrains.kotlin.io)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)

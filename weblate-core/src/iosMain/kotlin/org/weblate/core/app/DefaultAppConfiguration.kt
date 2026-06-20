@@ -3,18 +3,34 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package org.weblate.core.path
+package org.weblate.core.app
 
 import kotlinx.io.files.Path
 import org.weblate.core.Constants.DIR_WEBLATE
+import platform.Foundation.NSBundle
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 
-internal actual object DefaultPlatformPath : PlatformPath {
+/**
+ * Default app's configuration provider for iOS
+ */
+public object DefaultAppConfiguration : AppConfiguration {
 
-    actual override val cacheDir: Path
+    override val appName: String
+        get() {
+            val bundle = NSBundle.mainBundle
+            val displayName = bundle.objectForInfoDictionaryKey("CFBundleDisplayName") as? String
+            val bundleName = bundle.objectForInfoDictionaryKey("CFBundleName") as? String
+            return when {
+                !displayName.isNullOrBlank() -> displayName
+                !bundleName.isNullOrBlank() -> bundleName
+                else -> "Unknown"
+            }
+        }
+
+    override val cacheDir: Path
         get() = Path(
             NSSearchPathForDirectoriesInDomains(
                 NSCachesDirectory,
@@ -24,7 +40,7 @@ internal actual object DefaultPlatformPath : PlatformPath {
             DIR_WEBLATE
         )
 
-    actual override val userDir: Path
+    override val userDir: Path
         get() = Path(
             NSSearchPathForDirectoriesInDomains(
                 NSDocumentDirectory,
