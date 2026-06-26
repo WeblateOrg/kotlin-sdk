@@ -13,7 +13,7 @@ on:
     - '**'
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
     permissions:
       contents: read
     steps:
@@ -29,3 +29,5 @@ jobs:
       with:
         cache-provider: basic
     - run: ./gradlew assemble
+permissions:
+  contents: read
