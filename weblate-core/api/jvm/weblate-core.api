@@ -1,7 +1,6 @@
 public final class org/weblate/core/Weblate {
 	public static final field Companion Lorg/weblate/core/Weblate$Companion;
-	public fun <init> (Lorg/weblate/core/configuration/Instance;Lorg/weblate/core/path/PlatformPath;)V
-	public synthetic fun <init> (Lorg/weblate/core/configuration/Instance;Lorg/weblate/core/path/PlatformPath;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/weblate/core/configuration/InstanceConfiguration;Lorg/weblate/core/app/AppConfiguration;)V
 	public final fun saveTranslation (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -11,8 +10,21 @@ public final class org/weblate/core/Weblate$Companion {
 public abstract interface annotation class org/weblate/core/annotation/ExperimentalWeblateApi : java/lang/annotation/Annotation {
 }
 
-public final class org/weblate/core/configuration/Instance {
-	public static final field Companion Lorg/weblate/core/configuration/Instance$Companion;
+public abstract interface class org/weblate/core/app/AppConfiguration {
+	public abstract fun getAppName ()Ljava/lang/String;
+	public abstract fun getCacheDir ()Lkotlinx/io/files/Path;
+	public abstract fun getUserDir ()Lkotlinx/io/files/Path;
+}
+
+public final class org/weblate/core/app/DefaultAppConfiguration : org/weblate/core/app/AppConfiguration {
+	public fun <init> (Ljava/lang/String;)V
+	public fun getAppName ()Ljava/lang/String;
+	public fun getCacheDir ()Lkotlinx/io/files/Path;
+	public fun getUserDir ()Lkotlinx/io/files/Path;
+}
+
+public final class org/weblate/core/configuration/InstanceConfiguration {
+	public static final field Companion Lorg/weblate/core/configuration/InstanceConfiguration$Companion;
 	public static final field DEFAULT_SERVER_URL Ljava/lang/String;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -22,10 +34,6 @@ public final class org/weblate/core/configuration/Instance {
 	public final fun getServerUrl ()Ljava/lang/String;
 }
 
-public final class org/weblate/core/configuration/Instance$Companion {
+public final class org/weblate/core/configuration/InstanceConfiguration$Companion {
 }
 
-public abstract interface class org/weblate/core/path/PlatformPath {
-	public abstract fun getCacheDir ()Lkotlinx/io/files/Path;
-	public abstract fun getUserDir ()Lkotlinx/io/files/Path;
-}
