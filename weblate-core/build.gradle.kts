@@ -78,6 +78,7 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.apache5)
+            implementation(libs.jetbrains.coroutines.swing)
         }
         commonTest.dependencies {
             implementation(libs.jetbrains.kotlin.test)
