@@ -9,7 +9,6 @@ coroutines = "1.11.0"
 io = "0.9.1"
 kermit = "2.1.0"
 kotlin = "2.4.0"
-ktlint = "14.2.0"
 ktor = "3.5.1"
 startup = "1.2.0"
 
@@ -33,4 +32,3 @@ touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 [plugins]
 android-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 jetbrains-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
