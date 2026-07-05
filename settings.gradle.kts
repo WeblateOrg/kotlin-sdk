@@ -27,3 +27,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Weblate"
 include(":weblate-core", ":weblate-android")
+include(":sample-android")

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 Aayush Gupta <https://aayush.io>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<resources>
+  <string name="app_name" translatable="false">Weblate</string>
+</resources>
