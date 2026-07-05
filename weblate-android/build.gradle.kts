@@ -3,12 +3,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-@file:OptIn(ExperimentalAbiValidation::class)
-
-import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
+import com.android.build.api.dsl.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 val signingKey: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY")
 val signingPassword: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY_PASSWORD")
@@ -16,73 +12,46 @@ val shouldSignRelease: Boolean
     get() = !signingKey.isNullOrEmpty() && !signingPassword.isNullOrEmpty()
 
 plugins {
-    alias(libs.plugins.android.library.multiplatform)
-    alias(libs.plugins.jetbrains.kotlin.multiplatform)
+    alias(libs.plugins.android.library.core)
     `maven-publish`
     signing
 }
 
-tasks.withType<KotlinJvmCompile>().configureEach {
+kotlin {
+    jvmToolchain(21)
+
     compilerOptions {
         jvmTarget = JvmTarget.JVM_11
     }
 }
 
-kotlin {
-    jvmToolchain(21)
-    explicitApi = ExplicitApiMode.Strict
-
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            "-Xexpect-actual-classes"
-        )
+configure<LibraryExtension> {
+    namespace = "org.weblate.android"
+    compileSdk {
+        version = release(37)
     }
-
-    abiValidation()
-
-    android {
-        namespace = "org.weblate.core"
-        compileSdk {
-            version = release(37) {
-                minorApiLevel = 0
-            }
+    defaultConfig {
+        minSdk = 30
+        aarMetadata {
+            minCompileSdk = 30
         }
-        minSdk {
-            version = release(21)
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
         }
     }
 
-    jvm()
-    iosArm64()
-    iosSimulatorArm64()
-
-    sourceSets {
-        commonMain.dependencies {
-            implementation(libs.ktor.client.auth)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.content.negotiation)
-            implementation(libs.ktor.serialization.json)
-            implementation(libs.ktor.serialization.xml)
-            implementation(libs.jetbrains.coroutines.core)
-            implementation(libs.touchlab.kermit)
-            api(libs.jetbrains.kotlin.io)
-        }
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-            implementation(libs.jetbrains.coroutines.android)
-            implementation(libs.androidx.startup.runtime)
-        }
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
-        jvmMain.dependencies {
-            implementation(libs.ktor.client.apache5)
-            implementation(libs.jetbrains.coroutines.swing)
-        }
-        commonTest.dependencies {
-            implementation(libs.jetbrains.kotlin.test)
-        }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+dependencies {
+    implementation(projects.weblateCore)
+    implementation(libs.androidx.core)
 }
 
 // Run "./gradlew publishAllPublicationToLocalRepository" to generate release JARs/klibs locally
@@ -93,8 +62,8 @@ publishing {
 
         publications.withType<MavenPublication> {
             pom {
-                name = "Weblate"
-                description = "A library for syncing localizations directly into apps"
+                name = "Weblate - Android"
+                description = "An android library for syncing localizations directly into apps"
                 url = "https://github.com/WeblateOrg/kotlin-sdk"
 
                 licenses {

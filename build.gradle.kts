@@ -4,6 +4,7 @@
  */
 
 plugins {
-    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.library.core) apply false
+    alias(libs.plugins.android.library.multiplatform) apply false
     alias(libs.plugins.jetbrains.kotlin.multiplatform) apply false
 }
