@@ -5,40 +5,51 @@
 // - Show manifest properties: true
 // - Show declarations: true
 
-// Library unique name: <Weblate:weblate-core>
+// Library unique name: <org.weblate:weblate-core>
 open annotation class org.weblate.core.annotation/ExperimentalWeblateApi : kotlin/Annotation { // org.weblate.core.annotation/ExperimentalWeblateApi|null[0]
     constructor <init>() // org.weblate.core.annotation/ExperimentalWeblateApi.<init>|<init>(){}[0]
 }
 
-abstract interface org.weblate.core.path/PlatformPath { // org.weblate.core.path/PlatformPath|null[0]
-    abstract val cacheDir // org.weblate.core.path/PlatformPath.cacheDir|{}cacheDir[0]
-        abstract fun <get-cacheDir>(): kotlinx.io.files/Path // org.weblate.core.path/PlatformPath.cacheDir.<get-cacheDir>|<get-cacheDir>(){}[0]
-    abstract val userDir // org.weblate.core.path/PlatformPath.userDir|{}userDir[0]
-        abstract fun <get-userDir>(): kotlinx.io.files/Path // org.weblate.core.path/PlatformPath.userDir.<get-userDir>|<get-userDir>(){}[0]
+abstract interface org.weblate.core.app/AppConfiguration { // org.weblate.core.app/AppConfiguration|null[0]
+    abstract val appName // org.weblate.core.app/AppConfiguration.appName|{}appName[0]
+        abstract fun <get-appName>(): kotlin/String // org.weblate.core.app/AppConfiguration.appName.<get-appName>|<get-appName>(){}[0]
+    abstract val cacheDir // org.weblate.core.app/AppConfiguration.cacheDir|{}cacheDir[0]
+        abstract fun <get-cacheDir>(): kotlinx.io.files/Path // org.weblate.core.app/AppConfiguration.cacheDir.<get-cacheDir>|<get-cacheDir>(){}[0]
+    abstract val userDir // org.weblate.core.app/AppConfiguration.userDir|{}userDir[0]
+        abstract fun <get-userDir>(): kotlinx.io.files/Path // org.weblate.core.app/AppConfiguration.userDir.<get-userDir>|<get-userDir>(){}[0]
 }
 
-final class org.weblate.core.configuration/Instance { // org.weblate.core.configuration/Instance|null[0]
-    constructor <init>(kotlin/String, kotlin/String, kotlin/String, kotlin/String = ...) // org.weblate.core.configuration/Instance.<init>|<init>(kotlin.String;kotlin.String;kotlin.String;kotlin.String){}[0]
+final class org.weblate.core.configuration/InstanceConfiguration { // org.weblate.core.configuration/InstanceConfiguration|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String, kotlin/String = ...) // org.weblate.core.configuration/InstanceConfiguration.<init>|<init>(kotlin.String;kotlin.String;kotlin.String;kotlin.String){}[0]
 
-    final val authToken // org.weblate.core.configuration/Instance.authToken|{}authToken[0]
-        final fun <get-authToken>(): kotlin/String // org.weblate.core.configuration/Instance.authToken.<get-authToken>|<get-authToken>(){}[0]
-    final val component // org.weblate.core.configuration/Instance.component|{}component[0]
-        final fun <get-component>(): kotlin/String // org.weblate.core.configuration/Instance.component.<get-component>|<get-component>(){}[0]
-    final val project // org.weblate.core.configuration/Instance.project|{}project[0]
-        final fun <get-project>(): kotlin/String // org.weblate.core.configuration/Instance.project.<get-project>|<get-project>(){}[0]
-    final val serverUrl // org.weblate.core.configuration/Instance.serverUrl|{}serverUrl[0]
-        final fun <get-serverUrl>(): kotlin/String // org.weblate.core.configuration/Instance.serverUrl.<get-serverUrl>|<get-serverUrl>(){}[0]
+    final val authToken // org.weblate.core.configuration/InstanceConfiguration.authToken|{}authToken[0]
+        final fun <get-authToken>(): kotlin/String // org.weblate.core.configuration/InstanceConfiguration.authToken.<get-authToken>|<get-authToken>(){}[0]
+    final val component // org.weblate.core.configuration/InstanceConfiguration.component|{}component[0]
+        final fun <get-component>(): kotlin/String // org.weblate.core.configuration/InstanceConfiguration.component.<get-component>|<get-component>(){}[0]
+    final val project // org.weblate.core.configuration/InstanceConfiguration.project|{}project[0]
+        final fun <get-project>(): kotlin/String // org.weblate.core.configuration/InstanceConfiguration.project.<get-project>|<get-project>(){}[0]
+    final val serverUrl // org.weblate.core.configuration/InstanceConfiguration.serverUrl|{}serverUrl[0]
+        final fun <get-serverUrl>(): kotlin/String // org.weblate.core.configuration/InstanceConfiguration.serverUrl.<get-serverUrl>|<get-serverUrl>(){}[0]
 
-    final object Companion { // org.weblate.core.configuration/Instance.Companion|null[0]
-        final const val DEFAULT_SERVER_URL // org.weblate.core.configuration/Instance.Companion.DEFAULT_SERVER_URL|{}DEFAULT_SERVER_URL[0]
-            final fun <get-DEFAULT_SERVER_URL>(): kotlin/String // org.weblate.core.configuration/Instance.Companion.DEFAULT_SERVER_URL.<get-DEFAULT_SERVER_URL>|<get-DEFAULT_SERVER_URL>(){}[0]
+    final object Companion { // org.weblate.core.configuration/InstanceConfiguration.Companion|null[0]
+        final const val DEFAULT_SERVER_URL // org.weblate.core.configuration/InstanceConfiguration.Companion.DEFAULT_SERVER_URL|{}DEFAULT_SERVER_URL[0]
+            final fun <get-DEFAULT_SERVER_URL>(): kotlin/String // org.weblate.core.configuration/InstanceConfiguration.Companion.DEFAULT_SERVER_URL.<get-DEFAULT_SERVER_URL>|<get-DEFAULT_SERVER_URL>(){}[0]
     }
 }
 
 final class org.weblate.core/Weblate { // org.weblate.core/Weblate|null[0]
-    constructor <init>(org.weblate.core.configuration/Instance, org.weblate.core.path/PlatformPath = ...) // org.weblate.core/Weblate.<init>|<init>(org.weblate.core.configuration.Instance;org.weblate.core.path.PlatformPath){}[0]
+    constructor <init>(org.weblate.core.configuration/InstanceConfiguration, org.weblate.core.app/AppConfiguration) // org.weblate.core/Weblate.<init>|<init>(org.weblate.core.configuration.InstanceConfiguration;org.weblate.core.app.AppConfiguration){}[0]
 
     final suspend fun saveTranslation(kotlin/String): kotlinx.io.files/Path // org.weblate.core/Weblate.saveTranslation|saveTranslation(kotlin.String){}[0]
 
     final object Companion // org.weblate.core/Weblate.Companion|null[0]
+}
+
+final object org.weblate.core.app/DefaultAppConfiguration : org.weblate.core.app/AppConfiguration { // org.weblate.core.app/DefaultAppConfiguration|null[0]
+    final val appName // org.weblate.core.app/DefaultAppConfiguration.appName|{}appName[0]
+        final fun <get-appName>(): kotlin/String // org.weblate.core.app/DefaultAppConfiguration.appName.<get-appName>|<get-appName>(){}[0]
+    final val cacheDir // org.weblate.core.app/DefaultAppConfiguration.cacheDir|{}cacheDir[0]
+        final fun <get-cacheDir>(): kotlinx.io.files/Path // org.weblate.core.app/DefaultAppConfiguration.cacheDir.<get-cacheDir>|<get-cacheDir>(){}[0]
+    final val userDir // org.weblate.core.app/DefaultAppConfiguration.userDir|{}userDir[0]
+        final fun <get-userDir>(): kotlinx.io.files/Path // org.weblate.core.app/DefaultAppConfiguration.userDir.<get-userDir>|<get-userDir>(){}[0]
 }

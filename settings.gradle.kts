@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
         google {
@@ -25,4 +26,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Weblate"
-include(":weblate-core", ":sample")
+include(":weblate-core", ":weblate-android")
+include(":sample-android")
