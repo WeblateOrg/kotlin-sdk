@@ -12,7 +12,10 @@ coroutines = "1.11.0"
 io = "0.9.1"
 kermit = "2.1.0"
 kotlin = "2.4.10"
+ksp = "2.3.11"
 ktor = "3.5.2"
+room = "3.0.1"
+sqlite = "2.7.0"
 startup = "1.2.0"
 
 [libraries]
@@ -23,6 +26,9 @@ androidx-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifes
 androidx-compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-room3-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room" }
+androidx-room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startup" }
 jetbrains-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 jetbrains-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -43,5 +49,7 @@ touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library-core = { id = "com.android.library", version.ref = "agp" }
 android-library-multiplatform = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+androidx-room3 = { id = "androidx.room3", version.ref = "room" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 jetbrains-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
