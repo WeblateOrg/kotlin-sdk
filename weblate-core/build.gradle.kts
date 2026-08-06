@@ -18,6 +18,8 @@ val shouldSignRelease: Boolean
 plugins {
     alias(libs.plugins.android.library.multiplatform)
     alias(libs.plugins.jetbrains.kotlin.multiplatform)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.androidx.room3)
     `maven-publish`
     signing
 }
@@ -66,6 +68,8 @@ kotlin {
             implementation(libs.jetbrains.coroutines.core)
             implementation(libs.touchlab.kermit)
             api(libs.jetbrains.kotlin.io)
+            implementation(libs.androidx.room3.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)
@@ -83,6 +87,13 @@ kotlin {
             implementation(libs.jetbrains.kotlin.test)
         }
     }
+}
+
+dependencies {
+    add("kspAndroid", libs.androidx.room3.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room3.compiler)
+    add("kspIosArm64", libs.androidx.room3.compiler)
+    add("kspJvm", libs.androidx.room3.compiler)
 }
 
 // Run "./gradlew publishAllPublicationToLocalRepository" to generate release JARs/klibs locally
@@ -145,6 +156,10 @@ publishing {
             }
         }
     }
+}
+
+room3 {
+    schemaDirectory("$projectDir/schemas")
 }
 
 signing {

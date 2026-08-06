@@ -9,4 +9,6 @@ plugins {
     alias(libs.plugins.android.library.multiplatform) apply false
     alias(libs.plugins.jetbrains.kotlin.multiplatform) apply false
     alias(libs.plugins.jetbrains.kotlin.compose) apply false
+    alias(libs.plugins.google.ksp) apply false
+    alias(libs.plugins.androidx.room3) apply false
 }
