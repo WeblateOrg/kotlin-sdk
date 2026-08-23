@@ -9,13 +9,14 @@ repos:
   rev: v6.0.0
   hooks:
   - id: trailing-whitespace
+    exclude: ^.*schemas/.*\.json$
   - id: end-of-file-fixer
-    exclude: /api/
+    exclude: ^.*schemas/.*\.json$|/api/
   - id: check-yaml
-    exclude: /api/
   - id: check-toml
   - id: check-merge-conflict
   - id: check-json
+    exclude: ^.*schemas/.*\.json$
   - id: pretty-format-json
     args: [--no-sort-keys, --autofix, --no-ensure-ascii]
 - repo: https://github.com/adrienverge/yamllint

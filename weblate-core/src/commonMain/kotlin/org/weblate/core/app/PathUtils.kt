@@ -17,12 +17,19 @@ internal class PathUtils(private val appConfiguration: AppConfiguration) {
     }
 
     fun getTranslationsDir(languageCode: String): Path {
-        val path = Path(appConfiguration.userDir, DIR_TRANSLATIONS, languageCode)
-        SystemFileSystem.createDirectories(path)
-        return path
+        return Path(appConfiguration.userDir, DIR_TRANSLATIONS, languageCode).also { path ->
+            SystemFileSystem.createDirectories(path)
+        }
+    }
+
+    fun getDatabaseDir(): Path {
+        return Path(appConfiguration.userDir, DIR_DATABASE).also { path ->
+            SystemFileSystem.createDirectories(path)
+        }
     }
 
     companion object {
         private const val DIR_TRANSLATIONS = "translations"
+        private const val DIR_DATABASE = "database"
     }
 }

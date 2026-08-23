@@ -18,6 +18,7 @@ path = [
   "README.md",
   "**/api/**",
   "sample-android/src/main/res/resources.properties",
+  "weblate-core/schemas/org.weblate.core.database.WeblateDatabase/*.json",
 ]
 precedence = "aggregate"
 

@@ -70,6 +70,7 @@ kotlin {
             api(libs.jetbrains.kotlin.io)
             implementation(libs.androidx.room3.runtime)
             implementation(libs.androidx.sqlite.bundled)
+            implementation(libs.pdvrieze.xmlutil.serialization)
         }
         androidMain.dependencies {
             implementation(libs.ktor.client.okhttp)

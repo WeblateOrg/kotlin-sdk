@@ -22,10 +22,14 @@ import kotlinx.io.buffered
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import kotlinx.serialization.json.Json
+import nl.adaptivity.xmlutil.core.XmlVersion
+import nl.adaptivity.xmlutil.serialization.XML
 import org.weblate.core.annotation.ExperimentalWeblateApi
 import org.weblate.core.configuration.InstanceConfiguration
 import org.weblate.core.app.PathUtils
 import org.weblate.core.app.AppConfiguration
+import org.weblate.core.database.database
+import org.weblate.core.database.databaseBuilder
 
 /**
  * Primary way to interact and configure the Weblate SDK
@@ -39,6 +43,7 @@ public class Weblate(
 ) {
 
     private val pathUtils = PathUtils(app)
+    private val database = database(builder = databaseBuilder(app))
     private val authClient = HttpClient {
         defaultRequest { url(instance.baseUrl) }
         install(ContentNegotiation) {
@@ -76,6 +81,10 @@ public class Weblate(
             ignoreUnknownKeys = true
             coerceInputValues = true
             explicitNulls = true
+        }
+
+        private val xml = XML.v1 {
+            xmlVersion = XmlVersion.XML10
         }
     }
 }
