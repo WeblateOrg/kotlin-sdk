@@ -40,17 +40,13 @@ repos:
   hooks:
   - id: shellcheck
     require_serial: true
-- repo: https://github.com/rhysd/actionlint
-  rev: v1.7.12
-  hooks:
-  - id: actionlint
 - repo: https://github.com/renovatebot/pre-commit-hooks
   rev: 44.51.1
   hooks:
   - id: renovate-config-validator
     args: [--strict]
 - repo: https://github.com/zizmorcore/zizmor-pre-commit
-  rev: v1.29.0
+  rev: v1.30.0
   hooks:
   - id: zizmor
 - repo: https://github.com/mongodb/kingfisher
@@ -62,6 +58,10 @@ repos:
   hooks:
   - id: rumdl
   - id: rumdl-fmt
+- repo: https://github.com/kjanat/actionlint
+  rev: v1.14.0
+  hooks:
+  - id: actionlint
 ci:
   autoupdate_schedule: quarterly
   skip:
