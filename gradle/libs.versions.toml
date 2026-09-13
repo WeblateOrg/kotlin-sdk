@@ -10,12 +10,16 @@ composeBom = "2026.09.00"
 core = "1.19.0"
 coroutines = "1.11.0"
 io = "0.9.1"
+gradle = "2.2.1"
 kermit = "2.2.0"
 kotlin = "2.4.20"
 ktor = "3.5.2"
 startup = "1.2.0"
+serialization-json = "1.12.0-RC"
+weblate = "+"
 
 [libraries]
+android-gradle-plugin-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
 androidx-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
@@ -28,6 +32,7 @@ jetbrains-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-corouti
 jetbrains-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 jetbrains-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 jetbrains-kotlin-io = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "io" }
+jetbrains-kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 jetbrains-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -43,5 +48,9 @@ touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library-core = { id = "com.android.library", version.ref = "agp" }
 android-library-multiplatform = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "gradle" }
 jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 jetbrains-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+weblate-android = { id = "org.weblate.android", version.ref = "weblate" }

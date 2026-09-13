@@ -1,0 +1,41 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Aayush Gupta <https://aayush.io>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package org.weblate.plugin.android
+
+import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.gradle.AppPlugin
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+
+/**
+ * Plugin for android applications that introduces some useful tasks to localize with Weblate
+ */
+public class WeblateAndroidPlugin : Plugin<Project> {
+
+    override fun apply(project: Project) {
+        project.plugins.withType(AppPlugin::class.java) {
+            val androidComponents = project.extensions
+                .getByType(ApplicationAndroidComponentsExtension::class.java)
+
+            androidComponents.onVariants { variant ->
+                val outputPath = "outputs/arsc_json/${variant.name}/org.weblate.metadata.json"
+                val taskProvider = project.tasks.register(
+                    "generateWeblateJsonConfigFor${variant.name.replaceFirstChar { it.uppercase() }}",
+                    GenerateJsonTask::class.java
+                ) { task ->
+                    task.packageName.set(variant.applicationId)
+                    task.versionCode.set(variant.outputs.first().versionCode.map { it.toLong() })
+                    task.outputFile.set(project.layout.buildDirectory.file(outputPath))
+                }
+
+                variant.artifacts.use(taskProvider)
+                    .wiredWith(GenerateJsonTask::rFile)
+                    .toListenTo(SingleArtifact.RUNTIME_SYMBOL_LIST)
+            }
+        }
+    }
+}
