@@ -9,4 +9,8 @@ plugins {
     alias(libs.plugins.android.library.multiplatform) apply false
     alias(libs.plugins.jetbrains.kotlin.multiplatform) apply false
     alias(libs.plugins.jetbrains.kotlin.compose) apply false
+    alias(libs.plugins.jetbrains.kotlin.serialization) apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.gradle.plugin.publish) apply false
+    alias(libs.plugins.weblate.android) apply false
 }

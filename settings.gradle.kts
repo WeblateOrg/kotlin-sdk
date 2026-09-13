@@ -6,6 +6,7 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
+        mavenLocal()
         google {
             content {
                 includeGroupByRegex("com\\.android.*")
@@ -26,5 +27,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Weblate"
+include(":plugin-android")
 include(":weblate-core", ":weblate-android")
 include(":sample-android")
