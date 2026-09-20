@@ -20,6 +20,7 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.weblate.plugin.android.Constants.Json
 import org.weblate.plugin.android.model.Metadata
+import org.weblate.plugin.android.model.Resource
 
 /**
  * Task to generate a JSON config to help Weblate server generate a ARSC file to overlay resources
@@ -43,11 +44,13 @@ internal abstract class GenerateJsonTask: DefaultTask() {
     fun parse() {
         val rFile = rFile.get().asFile
         val outputJsonFile = outputFile.get().asFile
+        val resources = parseResourceIdsFromRTxt(rFile)
 
         val result = Metadata(
             packageName = packageName.get(),
             versionCode = versionCode.get(),
-            strings = parseResourceIdsFromRTxt(rFile)
+            strings = resources.getValue(Resource.STRING),
+            plurals = resources.getValue(Resource.PLURAL)
         )
 
         outputJsonFile.apply {
@@ -56,8 +59,9 @@ internal abstract class GenerateJsonTask: DefaultTask() {
         }
     }
 
-    private fun parseResourceIdsFromRTxt(file: File): Map<String, String> {
+    private fun parseResourceIdsFromRTxt(file: File): Map<Resource, Map<String, String>> {
         val stringMap = mutableMapOf<String, String>()
+        val pluralMap = mutableMapOf<String, String>()
 
         file.useLines { lines ->
             lines.forEach { line ->
@@ -67,12 +71,14 @@ internal abstract class GenerateJsonTask: DefaultTask() {
                     val key = tokens[2]
                     val resourceId = tokens[3]
 
-                    if (resourceType == "string" || resourceType == "plurals") {
-                        stringMap[key] = resourceId
+                    when (resourceType) {
+                        Resource.STRING.id -> stringMap[key] = resourceId
+                        Resource.PLURAL.id -> pluralMap[key] = resourceId
                     }
                 }
             }
         }
-        return stringMap
+
+        return mapOf(Resource.STRING to stringMap, Resource.PLURAL to pluralMap)
     }
 }

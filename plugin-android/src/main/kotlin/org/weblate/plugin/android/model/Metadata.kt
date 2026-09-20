@@ -14,5 +14,6 @@ import kotlinx.serialization.Serializable
 internal data class Metadata(
     val packageName: String,
     val versionCode: Long,
-    val strings: Map<String, String>
+    val strings: Map<String, String>,
+    val plurals: Map<String, String>
 )
