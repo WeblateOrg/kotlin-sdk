@@ -33,6 +33,8 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     "generateWeblateJsonConfigFor${variant.name.replaceFirstChar { it.uppercase() }}",
                     GenerateJsonTask::class.java
                 ) { task ->
+                    task.group = "weblate"
+                    task.description = "Generates JSON metadata for Weblate"
                     task.packageName.set(variant.applicationId)
                     task.versionCode.set(variant.outputs.first().versionCode.map { it.toLong() })
                     task.outputFile.set(project.layout.buildDirectory.file(outputPath))
@@ -42,6 +44,8 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     "uploadWeblateJsonConfigFor${variant.name.replaceFirstChar { it.uppercase() }}",
                     UploadJsonTask::class.java
                 ) { task ->
+                    task.group = "weblate"
+                    task.description = "Uploads generated JSON metadata to Weblate"
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set("${extension.serverUrl.get()}/api/components/${extension.project.get()}/${extension.component.get()}/addons/kotlin-sdk/builds/")
                     task.metadataFile.set(project.layout.buildDirectory.file(outputPath))
