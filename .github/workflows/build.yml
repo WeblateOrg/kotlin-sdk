@@ -12,8 +12,8 @@ on:
     branches:
     - '**'
 jobs:
-  build:
-    runs-on: macos-26
+  build-android:
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -28,6 +28,7 @@ jobs:
     - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb   # v6.3.0
       with:
         cache-provider: basic
-    - run: ./gradlew assemble
+    - run: ./gradlew :plugin-android:publishToMavenLocal
+    - run: ./gradlew -p sample-android :app:assembleDebug
 permissions:
   contents: read

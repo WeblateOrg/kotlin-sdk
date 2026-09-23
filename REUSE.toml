@@ -17,12 +17,15 @@ path = [
   ".gitignore",
   "README.md",
   "**/api/**",
-  "sample-android/src/main/res/resources.properties",
+  "sample-android/app/src/main/res/resources.properties",
 ]
 precedence = "aggregate"
 
 [[annotations]]
 SPDX-FileCopyrightText = "2007-2023 Gradle, Inc."
 SPDX-License-Identifier = "Apache-2.0"
-path = "gradle/wrapper/**"
+path = [
+  "gradle/wrapper/**",
+  "sample-android/gradle/wrapper/**"
+]
 precedence = "aggregate"
