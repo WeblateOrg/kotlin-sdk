@@ -26,6 +26,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Weblate"
-include(":plugin-android")
-include(":weblate-core", ":weblate-android")
+rootProject.name = "WeblateSample"
+include(":app")

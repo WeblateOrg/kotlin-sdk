@@ -1,0 +1,26 @@
+#
+# SPDX-FileCopyrightText: 2026 Aayush Gupta <https://aayush.io>
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[versions]
+activity = "1.13.0"
+agp = "9.4.1"
+composeBom = "2026.09.00"
+core = "1.19.0"
+kotlin = "2.4.20"
+weblate = "+"
+
+[libraries]
+androidx-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+androidx-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+androidx-compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-compose-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+weblate-android = { id = "org.weblate.android", version.ref = "weblate" }

@@ -4,13 +4,13 @@
   ~ SPDX-License-Identifier: GPL-3.0-or-later
   -->
 <resources>
-  <string name="app_name" translatable="false">Weblate</string>
+  <string name="app_name" translatable="false">Weblate Sample</string>
   <string name="sdk_title">Weblate Android SDK</string>
   <string name="sdk_summary">Live localisation updates for Android apps</string>
   <string name="weblate_description">Weblate is a free and open-source localisation platform. Thanks to Weblate, thousands of projects including applications, websites or even comic art pieces are easily translated into any language desired. Weblate removes the hurdle of understanding a programming language from the translation process, thus enabling anyone to join the efforts, and building active user communities with truly democratic spirit around the projects involved.</string>
   <string name="sdk_description">The aim of the Android SDK project is to support streamlining community driven localisation efforts directly into android application without the additional step of releasing a new version. This will further ease the process of translating and will enable developers to allow translations into a wider range of languages, including those with smaller communities.</string>
   <plurals name="sdk_advertisement">
     <item quantity="one">Use Weblate SDK in your android app today!</item>
-    <item quantity="many">Use Weblate SDK in your android apps today!</item>
+    <item quantity="other">Use Weblate SDK in your android apps today!</item>
   </plurals>
 </resources>
