@@ -12,8 +12,8 @@ on:
     branches:
     - '**'
 jobs:
-  build:
-    runs-on: macos-26
+  build-android:
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
