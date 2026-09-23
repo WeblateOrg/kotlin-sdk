@@ -20,9 +20,10 @@ import org.weblate.plugin.android.model.Metadata
 import org.weblate.plugin.android.model.Resource
 
 /**
- * Task to generate a JSON config to help Weblate server generate a ARSC file to overlay resources
+ * Task to generate metadata in JSON format to help Weblate server generate required files
+ * to overlay on Android for updating translations on the go.
  */
-internal abstract class GenerateJsonTask: DefaultTask() {
+internal abstract class GenerateMetadataTask: DefaultTask() {
 
     @get:InputFile
     @get:PathSensitive(PathSensitivity.NAME_ONLY)
@@ -77,5 +78,9 @@ internal abstract class GenerateJsonTask: DefaultTask() {
         }
 
         return mapOf(Resource.STRING to stringMap, Resource.PLURAL to pluralMap)
+    }
+
+    companion object {
+        const val TASK_DESCRIPTION = "Generates JSON metadata for Weblate"
     }
 }

@@ -19,4 +19,9 @@ internal object Constants {
         explicitNulls = false
         encodeDefaults = true
     }
+
+    /**
+     * Default task group for the plugin
+     */
+    const val WEBLATE_TASK_GROUP = "weblate"
 }

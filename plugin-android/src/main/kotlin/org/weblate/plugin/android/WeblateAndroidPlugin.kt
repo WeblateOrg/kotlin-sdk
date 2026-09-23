@@ -34,31 +34,34 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     )
                 )
 
-                val taskProvider = project.tasks.register(
-                    "generateWeblateJsonConfigFor${variant.name.replaceFirstChar { it.uppercase() }}",
-                    GenerateJsonTask::class.java
+                // Metadata generation task
+                val generationTaskProvider = project.tasks.register(
+                    "generateMetadataForWeblate${variant.name.replaceFirstChar { it.uppercase() }}",
+                    GenerateMetadataTask::class.java
                 ) { task ->
-                    task.group = "weblate"
-                    task.description = "Generates JSON metadata for Weblate"
+                    task.group = Constants.WEBLATE_TASK_GROUP
+                    task.description = GenerateMetadataTask.TASK_DESCRIPTION
                     task.packageName.set(variant.applicationId)
                     task.versionCode.set(variant.outputs.first().versionCode.map { it.toLong() })
                     task.outputFile.set(extension.metadataFile)
                 }
 
+                variant.artifacts.use(generationTaskProvider)
+                    .wiredWith(GenerateMetadataTask::rFile)
+                    .toListenTo(SingleArtifact.RUNTIME_SYMBOL_LIST)
+
+                // Metadata upload task
                 project.tasks.register(
-                    "uploadWeblateJsonConfigFor${variant.name.replaceFirstChar { it.uppercase() }}",
-                    UploadJsonTask::class.java
+                    "uploadMetadataForWeblate${variant.name.replaceFirstChar { it.uppercase() }}",
+                    UploadMetadataTask::class.java
                 ) { task ->
-                    task.group = "weblate"
-                    task.description = "Uploads generated JSON metadata to Weblate"
+                    task.group = Constants.WEBLATE_TASK_GROUP
+                    task.description = UploadMetadataTask.TASK_DESCRIPTION
+                    task.dependsOn(generationTaskProvider)
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set("${extension.serverUrl.get()}/api/components/${extension.project.get()}/${extension.component.get()}/addons/kotlin-sdk/builds/")
                     task.metadataFile.set(extension.metadataFile)
                 }
-
-                variant.artifacts.use(taskProvider)
-                    .wiredWith(GenerateJsonTask::rFile)
-                    .toListenTo(SingleArtifact.RUNTIME_SYMBOL_LIST)
             }
         }
     }

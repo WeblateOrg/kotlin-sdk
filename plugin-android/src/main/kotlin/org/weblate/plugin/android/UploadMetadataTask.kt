@@ -18,7 +18,11 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 
-internal abstract class UploadJsonTask : DefaultTask() {
+/**
+ * Task to upload metadata file to Weblate server
+ * @see GenerateMetadataTask
+ */
+internal abstract class UploadMetadataTask : DefaultTask() {
 
     @get:Input
     abstract val authToken: Property<String>
@@ -46,10 +50,14 @@ internal abstract class UploadJsonTask : DefaultTask() {
 
         logger.warn("Uploading metadata to Weblate")
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.statusCode() in 200..299) {
-            logger.warn("Successfully uploaded metadata to Weblate. Response code: ${response.statusCode()}")
-        } else {
-            logger.error("Failed to upload metadata to Weblate. Response: ${response.body()}")
+        when (response.statusCode()) {
+            200, 202 -> logger.warn("Successfully uploaded metadata to Weblate")
+            409 -> logger.error("Metadata already exists! Did you forget to increase version code?")
+            else -> logger.error("Got an unexpected response: ${response.body()}")
         }
+    }
+
+    companion object {
+        const val TASK_DESCRIPTION = "Uploads JSON metadata to Weblate"
     }
 }
