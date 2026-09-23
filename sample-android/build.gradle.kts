@@ -59,3 +59,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.tooling)
     debugImplementation(libs.androidx.compose.test.manifest)
 }
+
+weblate {
+    authToken = "INSERT_TOKEN_HERE"
+    project = "sandbox"
+    component = "kotlin-sdk"
+}

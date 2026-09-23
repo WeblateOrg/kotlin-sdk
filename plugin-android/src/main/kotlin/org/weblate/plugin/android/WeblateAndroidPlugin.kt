@@ -17,12 +17,18 @@ import org.gradle.api.Project
 public class WeblateAndroidPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
+        val extension = project.extensions.create(
+            "weblate", WeblateAndroidPluginExtension::class.java
+        )
+        // Default server URL for API calls
+        extension.serverUrl.convention("https://hosted.weblate.org")
+
         project.plugins.withType(AppPlugin::class.java) {
             val androidComponents = project.extensions
                 .getByType(ApplicationAndroidComponentsExtension::class.java)
 
             androidComponents.onVariants { variant ->
-                val outputPath = "outputs/arsc_json/${variant.name}/org.weblate.metadata.json"
+                val outputPath = "outputs/weblate/${variant.name}/metadata.json"
                 val taskProvider = project.tasks.register(
                     "generateWeblateJsonConfigFor${variant.name.replaceFirstChar { it.uppercase() }}",
                     GenerateJsonTask::class.java
@@ -30,6 +36,15 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.packageName.set(variant.applicationId)
                     task.versionCode.set(variant.outputs.first().versionCode.map { it.toLong() })
                     task.outputFile.set(project.layout.buildDirectory.file(outputPath))
+                }
+
+                project.tasks.register(
+                    "uploadWeblateJsonConfigFor${variant.name.replaceFirstChar { it.uppercase() }}",
+                    UploadJsonTask::class.java
+                ) { task ->
+                    task.authToken.set(extension.authToken)
+                    task.apiUrl.set("${extension.serverUrl.get()}/api/components/${extension.project.get()}/${extension.component.get()}/addons/kotlin-sdk/builds/")
+                    task.metadataFile.set(project.layout.buildDirectory.file(outputPath))
                 }
 
                 variant.artifacts.use(taskProvider)
