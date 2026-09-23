@@ -5,6 +5,7 @@
 
 package org.weblate.plugin.android
 
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 
 /**
@@ -30,6 +31,11 @@ public interface WeblateAndroidPluginExtension {
      * URL of the Weblate server, defaults to `https://hosted.weblate.org`
      */
     public val serverUrl: Property<String>
+
+    /**
+     * Path to output/input metadata file for Weblate, `defaults to build/output/weblate`
+     */
+    public val metadataFile: RegularFileProperty
 
     public companion object {
         internal const val DEFAULT_SERVER_URL: String = "https://hosted.weblate.org/"

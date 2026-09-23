@@ -20,15 +20,20 @@ public class WeblateAndroidPlugin : Plugin<Project> {
         val extension = project.extensions.create(
             "weblate", WeblateAndroidPluginExtension::class.java
         )
-        // Default server URL for API calls
-        extension.serverUrl.convention("https://hosted.weblate.org")
 
         project.plugins.withType(AppPlugin::class.java) {
             val androidComponents = project.extensions
                 .getByType(ApplicationAndroidComponentsExtension::class.java)
 
             androidComponents.onVariants { variant ->
-                val outputPath = "outputs/weblate/${variant.name}/metadata.json"
+                // Default configuration for extension
+                extension.serverUrl.convention("https://hosted.weblate.org")
+                extension.metadataFile.convention(
+                    project.layout.buildDirectory.file(
+                        "outputs/weblate/${variant.name}/metadata.json"
+                    )
+                )
+
                 val taskProvider = project.tasks.register(
                     "generateWeblateJsonConfigFor${variant.name.replaceFirstChar { it.uppercase() }}",
                     GenerateJsonTask::class.java
@@ -37,7 +42,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.description = "Generates JSON metadata for Weblate"
                     task.packageName.set(variant.applicationId)
                     task.versionCode.set(variant.outputs.first().versionCode.map { it.toLong() })
-                    task.outputFile.set(project.layout.buildDirectory.file(outputPath))
+                    task.outputFile.set(extension.metadataFile)
                 }
 
                 project.tasks.register(
@@ -48,7 +53,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.description = "Uploads generated JSON metadata to Weblate"
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set("${extension.serverUrl.get()}/api/components/${extension.project.get()}/${extension.component.get()}/addons/kotlin-sdk/builds/")
-                    task.metadataFile.set(project.layout.buildDirectory.file(outputPath))
+                    task.metadataFile.set(extension.metadataFile)
                 }
 
                 variant.artifacts.use(taskProvider)
