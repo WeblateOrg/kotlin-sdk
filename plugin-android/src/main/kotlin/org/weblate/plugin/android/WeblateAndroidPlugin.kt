@@ -27,7 +27,6 @@ public class WeblateAndroidPlugin : Plugin<Project> {
 
             androidComponents.onVariants { variant ->
                 // Default configuration for extension
-                extension.serverUrl.convention("https://hosted.weblate.org")
                 extension.metadataFile.convention(
                     project.layout.buildDirectory.file(
                         "outputs/weblate/${variant.name}/metadata.json"
