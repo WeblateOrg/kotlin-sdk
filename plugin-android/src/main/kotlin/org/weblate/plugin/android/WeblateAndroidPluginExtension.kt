@@ -36,4 +36,9 @@ public interface WeblateAndroidPluginExtension {
      * Path to output/input metadata file for Weblate, `defaults to build/output/weblate`
      */
     public val metadataFile: RegularFileProperty
+
+    /**
+     * URL of the CDN server
+     */
+    public val cdnUrl: Property<String>
 }
