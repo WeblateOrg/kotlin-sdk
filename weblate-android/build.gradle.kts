@@ -13,6 +13,7 @@ val shouldSignRelease: Boolean
 
 plugins {
     alias(libs.plugins.android.library.core)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
     `maven-publish`
     signing
 }
@@ -50,8 +51,16 @@ configure<LibraryExtension> {
 }
 
 dependencies {
-    implementation(projects.weblateCore)
     implementation(libs.androidx.core)
+
+    implementation(libs.jetbrains.kotlin.serialization)
+    implementation(libs.jetbrains.coroutines.android)
+
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.content.negotiation)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.client.okhttp)
 }
 
 // Run "./gradlew publishAllPublicationToLocalRepository" to generate release JARs/klibs locally
