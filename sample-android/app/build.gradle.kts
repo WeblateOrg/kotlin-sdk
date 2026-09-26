@@ -60,6 +60,8 @@ dependencies {
 }
 
 weblate {
+    serverUrl = "https://hosted.weblate.org"
+    cdnUrl = "https://weblate-cdn.com/c6e2de08693e4fb8bba1ecfae9a8cfd9"
     authToken = "INSERT_TOKEN_HERE"
     project = "sandbox"
     component = "kotlin-sdk"
