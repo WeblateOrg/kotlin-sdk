@@ -34,7 +34,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                 )
 
                 // Metadata generation task
-                val generationTaskProvider = project.tasks.register(
+                val metadataTaskProvider = project.tasks.register(
                     "generateMetadataForWeblate${variant.name.replaceFirstChar { it.uppercase() }}",
                     GenerateMetadataTask::class.java
                 ) { task ->
@@ -45,7 +45,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.outputFile.set(extension.metadataFile)
                 }
 
-                variant.artifacts.use(generationTaskProvider)
+                variant.artifacts.use(metadataTaskProvider)
                     .wiredWith(GenerateMetadataTask::rFile)
                     .toListenTo(SingleArtifact.RUNTIME_SYMBOL_LIST)
 
@@ -56,11 +56,24 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                 ) { task ->
                     task.group = Constants.WEBLATE_TASK_GROUP
                     task.description = UploadMetadataTask.TASK_DESCRIPTION
-                    task.dependsOn(generationTaskProvider)
+                    task.dependsOn(metadataTaskProvider)
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set("${extension.serverUrl.get()}/api/components/${extension.project.get()}/${extension.component.get()}/addons/kotlin-sdk/builds/")
                     task.metadataFile.set(extension.metadataFile)
                 }
+
+                // Config generation task
+                val configTaskProvider = project.tasks.register(
+                    "generateConfigForWeblate${variant.name.replaceFirstChar { it.uppercase() }}",
+                    GenerateConfigTask::class.java
+                ) { task ->
+                    task.cdnUrl.set(extension.cdnUrl)
+                }
+
+                variant.sources.kotlin?.addGeneratedSourceDirectory(
+                    configTaskProvider,
+                    GenerateConfigTask::outputDirectory
+                )
             }
         }
     }

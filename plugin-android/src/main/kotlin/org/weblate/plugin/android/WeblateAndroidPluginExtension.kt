@@ -10,6 +10,7 @@ import org.gradle.api.provider.Property
 
 /**
  * Extension to configure the Weblate Gradle plugin
+ * @see GenerateConfigTask
  */
 public interface WeblateAndroidPluginExtension {
     /**
