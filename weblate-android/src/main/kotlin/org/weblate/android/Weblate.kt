@@ -12,7 +12,6 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsBytes
 import io.ktor.http.HttpStatusCode
@@ -56,6 +55,9 @@ public class Weblate(private val application: Application) {
         loadResources()
     }
 
+    /**
+     * Downloads localization updates for the given locale, if available.
+     */
     public suspend fun updateResources(locale: Locale) {
         downloadManifest()?.locales?.get(locale.language)?.let { artifact ->
             Log.i(TAG, "Downloading localization updates for ${locale.displayLanguage}")
@@ -118,7 +120,7 @@ public class Weblate(private val application: Application) {
             }
     }
 
-    public companion object {
+    internal companion object {
         private const val DIR_WEBLATE = "weblate"
         private const val DIR_CONFIG = "config"
         private const val DIR_RESOURCES = "resources"
@@ -139,7 +141,6 @@ public class Weblate(private val application: Application) {
         }
 
         private val httpClient = HttpClient {
-            defaultRequest { url("") }
             install(ContentNegotiation) {
                 json(json)
             }

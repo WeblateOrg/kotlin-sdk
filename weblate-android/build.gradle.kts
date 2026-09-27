@@ -19,6 +19,8 @@ val shouldSignRelease: Boolean
 plugins {
     alias(libs.plugins.android.library.core)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.jetbrains.dokka.html)
+    alias(libs.plugins.jetbrains.dokka.java)
     `maven-publish`
     signing
 }
@@ -47,7 +49,6 @@ configure<LibraryExtension> {
     publishing {
         singleVariant("release") {
             withSourcesJar()
-            withJavadocJar()
         }
     }
 
@@ -68,6 +69,13 @@ dependencies {
     implementation(libs.ktor.client.okhttp)
 }
 
+// To generate documentation in Javadoc
+val dokkaJavadocJar = tasks.register<Jar>("dokkaJavadocJar") {
+    description = "A Javadoc JAR containing Dokka Javadoc"
+    from(tasks.dokkaGeneratePublicationJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
+}
+
 publishing {
     publications {
         val artifactVersion = "1.0.0"
@@ -80,6 +88,8 @@ publishing {
             afterEvaluate {
                 from(components["release"])
             }
+
+            artifact(dokkaJavadocJar)
 
             pom {
                 name = "Weblate - Android"
