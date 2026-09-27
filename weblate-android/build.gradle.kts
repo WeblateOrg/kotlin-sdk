@@ -3,8 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+@file:OptIn(ExperimentalAbiValidation::class)
+
 import com.android.build.api.dsl.LibraryExtension
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.abi.BinariesSource
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 val signingKey: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY")
 val signingPassword: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY_PASSWORD")
@@ -20,6 +25,8 @@ plugins {
 
 kotlin {
     jvmToolchain(21)
+
+    explicitApi = ExplicitApiMode.Strict
 
     compilerOptions {
         jvmTarget = JvmTarget.JVM_11
@@ -54,22 +61,26 @@ dependencies {
     implementation(libs.androidx.core)
 
     implementation(libs.jetbrains.kotlin.serialization)
-    implementation(libs.jetbrains.coroutines.android)
 
-    implementation(libs.ktor.client.auth)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.content.negotiation)
     implementation(libs.ktor.serialization.json)
     implementation(libs.ktor.client.okhttp)
 }
 
-// Run "./gradlew publishAllPublicationToLocalRepository" to generate release JARs/klibs locally
 publishing {
     publications {
         val artifactVersion = "1.0.0"
-        group = "org.weblate"
 
-        publications.withType<MavenPublication> {
+        register<MavenPublication>("release") {
+            group = "org.weblate"
+            artifactId = "android"
+            version = artifactVersion
+
+            afterEvaluate {
+                from(components["release"])
+            }
+
             pom {
                 name = "Weblate - Android"
                 description = "An android library for syncing localizations directly into apps"
@@ -116,10 +127,6 @@ publishing {
                     username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
                     password = System.getenv("SONATYPE_MAVEN_CENTRAL_PASSWORD")
                 }
-            }
-            maven {
-                name = "local"
-                url = uri(layout.buildDirectory.dir("maven"))
             }
         }
     }

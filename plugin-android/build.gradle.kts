@@ -31,7 +31,7 @@ gradlePlugin {
 
     plugins {
         register("android") {
-            id = "org.weblate.plugin.android"
+            id = "org.weblate.android"
             implementationClass = "org.weblate.plugin.android.WeblateAndroidPlugin"
         }
     }

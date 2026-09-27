@@ -6,7 +6,6 @@
 [versions]
 agp = "9.4.1"
 core = "1.19.1"
-coroutines = "1.11.0"
 gradle = "2.2.1"
 kotlin = "2.4.20"
 ktor = "3.6.0"
@@ -15,9 +14,7 @@ serialization-json = "1.12.0-RC"
 [libraries]
 android-gradle-plugin-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
-jetbrains-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 jetbrains-kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
-ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }

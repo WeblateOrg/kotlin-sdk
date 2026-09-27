@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SPDX-FileCopyrightText: 2026 Aayush Gupta <https://aayush.io>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- For checking and downloading localization updates -->
+  <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

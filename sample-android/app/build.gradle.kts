@@ -49,6 +49,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.weblate.android)
+
     implementation(libs.androidx.core)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity)

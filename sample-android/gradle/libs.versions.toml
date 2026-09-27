@@ -19,8 +19,9 @@ androidx-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifes
 androidx-compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+weblate-android = { module = "org.weblate:android", version.ref = "weblate" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-weblate-android = { id = "org.weblate.plugin.android", version.ref = "weblate" }
+weblate-android = { id = "org.weblate.android", version.ref = "weblate" }

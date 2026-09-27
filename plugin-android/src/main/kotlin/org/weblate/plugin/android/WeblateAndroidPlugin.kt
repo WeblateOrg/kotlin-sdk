@@ -70,6 +70,11 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.cdnUrl.set(extension.cdnUrl)
                 }
 
+                variant.sources.resources?.addGeneratedSourceDirectory(
+                    configTaskProvider,
+                    GenerateConfigTask::outputDirectory
+                )
+
                 variant.sources.kotlin?.addGeneratedSourceDirectory(
                     configTaskProvider,
                     GenerateConfigTask::outputDirectory
