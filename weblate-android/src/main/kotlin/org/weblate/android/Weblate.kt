@@ -9,6 +9,16 @@ import android.app.Application
 import android.content.res.loader.ResourcesLoader
 import android.content.res.loader.ResourcesProvider
 import android.util.Log
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.Operation
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -19,11 +29,17 @@ import io.ktor.serialization.kotlinx.json.json
 import java.io.File
 import java.util.Locale
 import java.util.ServiceLoader
+import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.toJavaDuration
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
 import org.weblate.android.model.Artifact
 import org.weblate.android.model.Manifest
+import org.weblate.android.work.WeblateWorker
+import org.weblate.android.work.WeblateWorker.Companion.ONE_TIME_WEBLATE_WORKER
+import org.weblate.android.work.WeblateWorker.Companion.PERIODIC_WEBLATE_WORKER
 
 /**
  * Primary way to interact with the Weblate library
@@ -56,9 +72,9 @@ public class Weblate(private val application: Application) {
     }
 
     /**
-     * Downloads localization updates for the given locale, if available.
+     * Downloads localization update for the given locale, if available.
      */
-    public suspend fun updateResources(locale: Locale) {
+    public suspend fun download(locale: Locale) {
         downloadManifest()?.locales?.get(locale.language)?.let { artifact ->
             Log.i(TAG, "Downloading localization updates for ${locale.displayLanguage}")
             download(artifact)
@@ -66,9 +82,47 @@ public class Weblate(private val application: Application) {
     }
 
     /**
+     * Schedules daily localization update for current locale
+     */
+    public fun scheduleLocalizationUpdate(): Operation {
+        val periodicWorkRequest = PeriodicWorkRequestBuilder<WeblateWorker>(
+            repeatInterval = 1.days.toJavaDuration(),
+            flexTimeInterval = 1.hours.toJavaDuration()
+        )
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.UNMETERED)
+            .build()
+
+        periodicWorkRequest
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 4.hours.toJavaDuration())
+            .setConstraints(constraints)
+
+        Log.i(TAG, "Scheduling periodic localization updates!")
+        return WorkManager.getInstance(application)
+            .enqueueUniquePeriodicWork(
+                PERIODIC_WEBLATE_WORKER,
+                ExistingPeriodicWorkPolicy.KEEP,
+                periodicWorkRequest.build()
+            )
+    }
+
+    /**
+     * Triggers an immediate localization update for current locale
+     */
+    public fun triggerLocalizationUpdate(): Operation {
+        val workRequest = OneTimeWorkRequestBuilder<WeblateWorker>()
+            .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
+            .build()
+
+        return WorkManager.getInstance(application)
+            .enqueueUniqueWork(ONE_TIME_WEBLATE_WORKER, ExistingWorkPolicy.KEEP, workRequest)
+    }
+
+    /**
      * Downloads public manifest of resources pointing to localization updates from CDN server
      */
-    internal suspend fun downloadManifest(): Manifest? {
+    private suspend fun downloadManifest(): Manifest? {
         val packageName = application.packageName
         val versionCode = application.packageManager
             .getPackageInfo(packageName, 0)
@@ -95,7 +149,7 @@ public class Weblate(private val application: Application) {
      * Hooks weblate resources directory to application's resource loader for loading localization
      * updates
      */
-    internal fun loadResources() {
+    private fun loadResources() {
         ResourcesLoader().also { resourcesLoader ->
             resourcesLoader.addProvider(
                 ResourcesProvider.loadFromDirectory(resourcesDir.path, null)
@@ -107,7 +161,7 @@ public class Weblate(private val application: Application) {
     /**
      * Downloads the given resources artifact
      */
-    internal suspend fun download(artifact: Artifact) {
+    private suspend fun download(artifact: Artifact) {
         httpClient.prepareGet("${configProvider.cdnUrl}/artifacts/${artifact.sha256}.arsc")
             .execute { response ->
                 when (response.status) {

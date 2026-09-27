@@ -60,6 +60,7 @@ configure<LibraryExtension> {
 
 dependencies {
     implementation(libs.androidx.core)
+    implementation(libs.androidx.work)
 
     implementation(libs.jetbrains.kotlin.serialization)
 

@@ -11,10 +11,12 @@ gradle = "2.2.1"
 kotlin = "2.4.20"
 ktor = "3.6.0"
 serialization-json = "1.12.0-RC"
+work = "2.12.0"
 
 [libraries]
 android-gradle-plugin-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
+androidx-work = { module = "androidx.work:work-runtime", version.ref = "work" }
 jetbrains-kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
