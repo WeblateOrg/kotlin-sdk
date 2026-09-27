@@ -13,4 +13,5 @@
     <item quantity="one">Use Weblate SDK in your android app today!</item>
     <item quantity="other">Use Weblate SDK in your android apps today!</item>
   </plurals>
+  <string name="update">Update</string>
 </resources>

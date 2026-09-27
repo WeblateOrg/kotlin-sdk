@@ -51,7 +51,7 @@ public class Weblate(private val application: Application) {
 
     init {
         configDir.mkdirs()
-        resources.mkdirs()
+        resourcesDir.mkdirs()
 
         loadResources()
     }

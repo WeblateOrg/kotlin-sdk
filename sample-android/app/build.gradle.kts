@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.compose.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.lifecycle.viewmodel)
 
     debugImplementation(libs.androidx.compose.tooling)
     debugImplementation(libs.androidx.compose.test.manifest)
