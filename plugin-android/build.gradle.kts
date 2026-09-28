@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import org.gradle.plugin.compatibility.compatibility
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -33,6 +34,12 @@ gradlePlugin {
         register("android") {
             id = "org.weblate.android"
             implementationClass = "org.weblate.plugin.android.WeblateAndroidPlugin"
+            compatibility {
+                features {
+                    isolatedProjects = true
+                    configurationCache = true
+                }
+            }
         }
     }
 }
