@@ -5,7 +5,7 @@
 
 package org.weblate.plugin.android
 
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 
 /**
@@ -36,7 +36,7 @@ public interface WeblateAndroidPluginExtension {
     /**
      * Path to output/input metadata file for Weblate, `defaults to build/output/weblate`
      */
-    public val metadataFile: RegularFileProperty
+    public val metadataDir: DirectoryProperty
 
     /**
      * URL of the CDN server

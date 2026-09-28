@@ -79,7 +79,7 @@ val dokkaJavadocJar = tasks.register<Jar>("dokkaJavadocJar") {
 
 publishing {
     publications {
-        val artifactVersion = "1.0.0"
+        val artifactVersion = libs.versions.weblate.get()
 
         register<MavenPublication>("release") {
             group = "org.weblate"
@@ -132,7 +132,7 @@ publishing {
             }
             maven {
                 name = "centralRelease"
-                version = "$artifactVersion-alpha01"
+                version = artifactVersion
                 url = uri("https://central.sonatype.com/api/v1/publisher/deployments/download/")
                 credentials {
                     username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")

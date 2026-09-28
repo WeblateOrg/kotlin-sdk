@@ -47,6 +47,12 @@ public class Weblate(private val context: Context) {
 
     private val TAG = Weblate::class.java.simpleName
 
+    // TODO: Generate it in WeblateConfig
+    private val packageName = context.packageName
+    private val versionCode = context.packageManager
+        .getPackageInfo(packageName, 0)
+        .longVersionCode
+
     private val weblateDir: File
         get() = File(context.filesDir, DIR_WEBLATE)
 
@@ -61,6 +67,7 @@ public class Weblate(private val context: Context) {
 
     private val resources: File
         get() = File(resourcesDir, FILE_RESOURCES)
+            .resolve(versionCode.toString())
 
     init {
         configDir.mkdirs()
@@ -74,7 +81,7 @@ public class Weblate(private val context: Context) {
      */
     public suspend fun download(locale: Locale) {
         downloadManifest()?.locales?.get(locale.language)?.let { artifact ->
-            Log.i(TAG, "Downloading localization updates for ${locale.displayLanguage}")
+            Log.i(TAG, "Downloading localization updates for ${locale.language}")
             download(artifact)
         }
     }
@@ -137,11 +144,6 @@ public class Weblate(private val context: Context) {
      * Downloads public manifest of resources pointing to localization updates from CDN server
      */
     private suspend fun downloadManifest(): Manifest? {
-        val packageName = context.packageName
-        val versionCode = context.packageManager
-            .getPackageInfo(packageName, 0)
-            .longVersionCode
-
         return httpClient
             .prepareGet("${configProvider.cdnUrl}/${packageName}/$versionCode/$FILE_MANIFEST")
             .execute { response ->

@@ -6,6 +6,7 @@
 [versions]
 activity = "1.13.0"
 agp = "9.4.1"
+compat = "1.8.0"
 composeBom = "2026.09.00"
 core = "1.19.1"
 kotlin = "2.4.20"
@@ -15,6 +16,7 @@ weblate = "+"
 [libraries]
 androidx-activity = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
+androidx-compat = { module = "androidx.appcompat:appcompat", version.ref = "compat" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-compose-tooling = { module = "androidx.compose.ui:ui-tooling" }

@@ -26,7 +26,7 @@ dependencies {
 
 gradlePlugin {
     group = "org.weblate"
-    version = "1.0.0"
+    version = libs.versions.weblate.get()
     website = "https://weblate.org/"
     vcsUrl = "https://github.com/WeblateOrg/kotlin-sdk"
 
