@@ -5,7 +5,7 @@
 
 package org.weblate.android
 
-import android.app.Application
+import android.content.Context
 import android.content.res.loader.ResourcesLoader
 import android.content.res.loader.ResourcesProvider
 import android.util.Log
@@ -42,15 +42,15 @@ import org.weblate.android.work.WeblateWorker.Companion.ONE_TIME_WEBLATE_WORKER
 import org.weblate.android.work.WeblateWorker.Companion.PERIODIC_WEBLATE_WORKER
 
 /**
- * Primary way to interact with the Weblate library
+ * Primary way to interact with the Weblate library.
  */
 @OptIn(ExperimentalSerializationApi::class)
-public class Weblate(private val application: Application) {
+public class Weblate(private val context: Context) {
 
     private val TAG = Weblate::class.java.simpleName
 
     private val weblateDir: File
-        get() = File(application.filesDir, DIR_WEBLATE)
+        get() = File(context.filesDir, DIR_WEBLATE)
 
     private val configDir: File
         get() = File(weblateDir, DIR_CONFIG)
@@ -99,7 +99,7 @@ public class Weblate(private val application: Application) {
             .setConstraints(constraints)
 
         Log.i(TAG, "Scheduling periodic localization updates!")
-        return WorkManager.getInstance(application)
+        return WorkManager.getInstance(context)
             .enqueueUniquePeriodicWork(
                 PERIODIC_WEBLATE_WORKER,
                 ExistingPeriodicWorkPolicy.KEEP,
@@ -115,7 +115,7 @@ public class Weblate(private val application: Application) {
             .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
             .build()
 
-        return WorkManager.getInstance(application)
+        return WorkManager.getInstance(context)
             .enqueueUniqueWork(ONE_TIME_WEBLATE_WORKER, ExistingWorkPolicy.KEEP, workRequest)
     }
 
@@ -123,8 +123,8 @@ public class Weblate(private val application: Application) {
      * Downloads public manifest of resources pointing to localization updates from CDN server
      */
     private suspend fun downloadManifest(): Manifest? {
-        val packageName = application.packageName
-        val versionCode = application.packageManager
+        val packageName = context.packageName
+        val versionCode = context.packageManager
             .getPackageInfo(packageName, 0)
             .longVersionCode
 
@@ -154,7 +154,7 @@ public class Weblate(private val application: Application) {
             resourcesLoader.addProvider(
                 ResourcesProvider.loadFromDirectory(resourcesDir.path, null)
             )
-            application.resources.addLoaders(resourcesLoader)
+            context.resources.addLoaders(resourcesLoader)
         }
     }
 
