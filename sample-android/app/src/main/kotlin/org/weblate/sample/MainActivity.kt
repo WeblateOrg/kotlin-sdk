@@ -5,27 +5,35 @@
 
 package org.weblate.sample
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.weblate.sample.ui.theme.WeblateTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +49,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun PrimaryScreen() {
+fun PrimaryScreen(viewModel: MainViewModel = viewModel()) {
+    ScreenContent(
+        onUpdateResources = {
+            viewModel.updateResources()
+        }
+    )
+}
+
+@Composable
+fun ScreenContent(onUpdateResources: () -> Unit = {}) {
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -72,12 +89,31 @@ fun PrimaryScreen() {
                 text = pluralStringResource(R.plurals.sdk_advertisement, 10),
                 style = MaterialTheme.typography.bodyLarge
             )
+
+            Button(onClick = onUpdateResources) {
+                Text(text = stringResource(R.string.update))
+            }
         }
     }
+}
+
+@Composable
+fun WeblateTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+    val colorScheme = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+
+        darkTheme -> darkColorScheme()
+        else -> lightColorScheme()
+    }
+
+    MaterialTheme(colorScheme = colorScheme, content = content)
 }
 
 @Preview
 @Composable
 private fun PrimaryScreenPreview() {
-    PrimaryScreen()
+    ScreenContent()
 }

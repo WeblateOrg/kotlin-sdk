@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import org.gradle.plugin.compatibility.compatibility
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -32,7 +33,16 @@ gradlePlugin {
     plugins {
         register("android") {
             id = "org.weblate.android"
+            displayName = "Weblate Gradle Plugin - Android"
+            description = "Gradle plugin providing helpful tasks to localize apps with Weblate"
             implementationClass = "org.weblate.plugin.android.WeblateAndroidPlugin"
+            tags = listOf("localization", "translations", "android")
+            compatibility {
+                features {
+                    isolatedProjects = true
+                    configurationCache = true
+                }
+            }
         }
     }
 }
@@ -43,7 +53,7 @@ publishing {
             pom {
                 name = "Weblate Gradle Plugin - Android"
                 description = "Gradle plugin providing helpful tasks to localize apps with Weblate"
-                url = "https://github.com/WeblateOrg/kotlin-sdk"
+                url = "https://weblate.org/"
 
                 licenses {
                     license {

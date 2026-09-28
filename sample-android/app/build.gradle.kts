@@ -49,17 +49,22 @@ android {
 }
 
 dependencies {
+    implementation(libs.weblate.android)
+
     implementation(libs.androidx.core)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity)
     implementation(libs.androidx.compose.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.lifecycle.viewmodel)
 
     debugImplementation(libs.androidx.compose.tooling)
     debugImplementation(libs.androidx.compose.test.manifest)
 }
 
 weblate {
+    serverUrl = "https://hosted.weblate.org"
+    cdnUrl = "https://weblate-cdn.com/c6e2de08693e4fb8bba1ecfae9a8cfd9"
     authToken = "INSERT_TOKEN_HERE"
     project = "sandbox"
     component = "kotlin-sdk"

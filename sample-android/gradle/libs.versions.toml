@@ -9,6 +9,7 @@ agp = "9.4.1"
 composeBom = "2026.09.00"
 core = "1.19.1"
 kotlin = "2.4.20"
+lifecycle = "2.11.0"
 weblate = "+"
 
 [libraries]
@@ -19,6 +20,8 @@ androidx-compose-test-manifest = { module = "androidx.compose.ui:ui-test-manifes
 androidx-compose-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+weblate-android = { module = "org.weblate:android", version.ref = "weblate" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -3,8 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+@file:OptIn(ExperimentalAbiValidation::class)
+
 import com.android.build.api.dsl.LibraryExtension
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.abi.BinariesSource
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 val signingKey: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY")
 val signingPassword: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY_PASSWORD")
@@ -13,12 +18,17 @@ val shouldSignRelease: Boolean
 
 plugins {
     alias(libs.plugins.android.library.core)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.jetbrains.dokka.html)
+    alias(libs.plugins.jetbrains.dokka.java)
     `maven-publish`
     signing
 }
 
 kotlin {
     jvmToolchain(21)
+
+    explicitApi = ExplicitApiMode.Strict
 
     compilerOptions {
         jvmTarget = JvmTarget.JVM_11
@@ -39,7 +49,6 @@ configure<LibraryExtension> {
     publishing {
         singleVariant("release") {
             withSourcesJar()
-            withJavadocJar()
         }
     }
 
@@ -50,17 +59,39 @@ configure<LibraryExtension> {
 }
 
 dependencies {
-    implementation(projects.weblateCore)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.work)
+
+    implementation(libs.jetbrains.kotlin.serialization)
+
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.content.negotiation)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.client.okhttp)
 }
 
-// Run "./gradlew publishAllPublicationToLocalRepository" to generate release JARs/klibs locally
+// To generate documentation in Javadoc
+val dokkaJavadocJar = tasks.register<Jar>("dokkaJavadocJar") {
+    description = "A Javadoc JAR containing Dokka Javadoc"
+    from(tasks.dokkaGeneratePublicationJavadoc.flatMap { it.outputDirectory })
+    archiveClassifier.set("javadoc")
+}
+
 publishing {
     publications {
         val artifactVersion = "1.0.0"
-        group = "org.weblate"
 
-        publications.withType<MavenPublication> {
+        register<MavenPublication>("release") {
+            group = "org.weblate"
+            artifactId = "android"
+            version = artifactVersion
+
+            afterEvaluate {
+                from(components["release"])
+            }
+
+            artifact(dokkaJavadocJar)
+
             pom {
                 name = "Weblate - Android"
                 description = "An android library for syncing localizations directly into apps"
@@ -107,10 +138,6 @@ publishing {
                     username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
                     password = System.getenv("SONATYPE_MAVEN_CENTRAL_PASSWORD")
                 }
-            }
-            maven {
-                name = "local"
-                url = uri(layout.buildDirectory.dir("maven"))
             }
         }
     }
