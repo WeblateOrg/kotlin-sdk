@@ -33,7 +33,10 @@ gradlePlugin {
     plugins {
         register("android") {
             id = "org.weblate.android"
+            displayName = "Weblate Gradle Plugin - Android"
+            description = "Gradle plugin providing helpful tasks to localize apps with Weblate"
             implementationClass = "org.weblate.plugin.android.WeblateAndroidPlugin"
+            tags = listOf("localization", "translations", "android")
             compatibility {
                 features {
                     isolatedProjects = true
@@ -50,7 +53,7 @@ publishing {
             pom {
                 name = "Weblate Gradle Plugin - Android"
                 description = "Gradle plugin providing helpful tasks to localize apps with Weblate"
-                url = "https://github.com/WeblateOrg/kotlin-sdk"
+                url = "https://weblate.org/"
 
                 licenses {
                     license {
