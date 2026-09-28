@@ -74,7 +74,7 @@ public class Weblate(private val context: Context) {
      */
     public suspend fun download(locale: Locale) {
         downloadManifest()?.locales?.get(locale.language)?.let { artifact ->
-            Log.i(TAG, "Downloading localization updates for ${locale.displayLanguage}")
+            Log.i(TAG, "Downloading localization updates for ${locale.language}")
             download(artifact)
         }
     }

@@ -31,7 +31,7 @@ android {
         targetSdk {
             version = release(37)
         }
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0.0"
     }
 
@@ -52,7 +52,9 @@ android {
         }
     }
     buildFeatures {
+        buildConfig = true
         compose = true
+        viewBinding = true
     }
     androidResources {
         generateLocaleConfig = true
@@ -63,6 +65,7 @@ dependencies {
     implementation(libs.weblate.android)
 
     implementation(libs.androidx.core)
+    implementation(libs.androidx.compat)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity)
     implementation(libs.androidx.compose.preview)
@@ -88,7 +91,7 @@ androidComponents {
 
 weblate {
     serverUrl = "https://hosted.weblate.org"
-    cdnUrl = "https://weblate-cdn.com/c6e2de08693e4fb8bba1ecfae9a8cfd9"
+    cdnUrl = "https://weblate-cdn.com/311793d2229548828ed13fa70e34935a"
     authToken = "INSERT_TOKEN_HERE"
     project = "sandbox"
     component = "kotlin-sdk"

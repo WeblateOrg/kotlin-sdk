@@ -5,9 +5,11 @@
 
 package org.weblate.sample
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -50,15 +52,22 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PrimaryScreen(viewModel: MainViewModel = viewModel()) {
+    val context = LocalContext.current
+
     ScreenContent(
         onUpdateResources = {
             viewModel.updateResources()
+        },
+        onSwitchActivity = {
+            Intent(context, ChildActivity::class.java).also { intent ->
+                context.startActivity(intent)
+            }
         }
     )
 }
 
 @Composable
-fun ScreenContent(onUpdateResources: () -> Unit = {}) {
+fun ScreenContent(onUpdateResources: () -> Unit = {}, onSwitchActivity: () -> Unit = {}) {
     Scaffold { paddingValues ->
         Column(
             modifier = Modifier
@@ -69,6 +78,10 @@ fun ScreenContent(onUpdateResources: () -> Unit = {}) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            Text(
+                text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
+                style = MaterialTheme.typography.titleLarge
+            )
             Text(
                 text = stringResource(R.string.sdk_title),
                 style = MaterialTheme.typography.titleLarge
@@ -92,6 +105,10 @@ fun ScreenContent(onUpdateResources: () -> Unit = {}) {
 
             Button(onClick = onUpdateResources) {
                 Text(text = stringResource(R.string.update))
+            }
+
+            Button(onClick = onSwitchActivity) {
+                Text(text = "Switch to Java")
             }
         }
     }

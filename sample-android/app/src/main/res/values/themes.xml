@@ -4,5 +4,5 @@
   ~ SPDX-License-Identifier: GPL-3.0-or-later
   -->
 <resources>
-    <style name="Theme.Weblate" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Weblate" parent="Theme.AppCompat.DayNight.NoActionBar" />
 </resources>
