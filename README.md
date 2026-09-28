@@ -150,3 +150,13 @@ AGP 9.x moved to built-in Kotlin which has broken the binary compatibility valid
 Please open an issue with details and expected behavior. The project is written in Kotlin and thus
 has been mainly tested on Kotlin-only samples. We will be happy to resolve issues, if any, to support
 Java too.
+
+## Funding
+
+### NGI Mobifree Fund
+
+This project was funded through the [NGI Mobifree Fund](https://nlnet.nl/mobifree), a fund established
+by [NLnet](https://nlnet.nl/) with financial support from the European Commission's Next Generation
+Internet programme under the aegis of DG Communications Networks, Content and Technology. The NGI
+Mobifree R&D programme is part of Horizon Europe research and innovation programme under grant agreement
+No. 101135795.
