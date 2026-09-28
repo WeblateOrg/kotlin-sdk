@@ -10,8 +10,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import java.util.Locale
 import kotlinx.coroutines.launch
+import org.weblate.android.Weblate
 
 class MainViewModel(private val application: Application) : AndroidViewModel(application) {
+
+    private val weblate = Weblate(application)
 
     fun updateResources() {
         viewModelScope.launch {
@@ -19,7 +22,7 @@ class MainViewModel(private val application: Application) : AndroidViewModel(app
                 .setLanguage("hi")
                 .setRegion("IN")
                 .build()
-            app.weblate.updateResources(locale)
+            weblate.download(locale)
         }
     }
 }

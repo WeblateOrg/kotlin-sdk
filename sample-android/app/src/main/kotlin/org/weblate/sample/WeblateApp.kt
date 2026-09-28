@@ -12,5 +12,9 @@ class WeblateApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Enables daily localization updates
+        Weblate(this)
+            .scheduleDailyLocalizationUpdate()
     }
 }
