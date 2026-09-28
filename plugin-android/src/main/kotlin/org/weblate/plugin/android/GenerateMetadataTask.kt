@@ -7,14 +7,17 @@ package org.weblate.plugin.android
 
 import java.io.File
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.weblate.plugin.android.Constants.FILE_METADATA
 import org.weblate.plugin.android.Constants.Json
 import org.weblate.plugin.android.model.Metadata
 import org.weblate.plugin.android.model.Resource
@@ -23,7 +26,7 @@ import org.weblate.plugin.android.model.Resource
  * Task to generate metadata in JSON format to help Weblate server generate required files
  * to overlay on Android for updating translations on the go.
  */
-internal abstract class GenerateMetadataTask: DefaultTask() {
+internal abstract class GenerateMetadataTask : DefaultTask() {
 
     @get:InputFile
     @get:PathSensitive(PathSensitivity.NAME_ONLY)
@@ -33,27 +36,32 @@ internal abstract class GenerateMetadataTask: DefaultTask() {
     abstract val packageName: Property<String>
 
     @get:Input
-    abstract val versionCode: Property<Long>
+    abstract val versionCodes: ListProperty<Int>
 
-    @get:OutputFile
-    abstract val outputFile: RegularFileProperty
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
 
     @TaskAction
     fun parse() {
         val rFile = rFile.get().asFile
-        val outputJsonFile = outputFile.get().asFile
+        val metadataDir = outputDir.get().asFile
         val resources = parseResourceIdsFromRTxt(rFile)
 
-        val result = Metadata(
-            packageName = packageName.get(),
-            versionCode = versionCode.get(),
-            strings = resources.getValue(Resource.STRING),
-            plurals = resources.getValue(Resource.PLURAL)
-        )
+        versionCodes.get().forEach { versionCode ->
+            val versionDir = metadataDir.resolve(versionCode.toString()).apply { mkdirs() }
+            val outputJsonFile = versionDir.resolve(FILE_METADATA)
 
-        outputJsonFile.apply {
-            parentFile.mkdirs()
-            writeText(Json.encodeToString(result))
+            val result = Metadata(
+                packageName = packageName.get(),
+                versionCode = versionCode,
+                strings = resources.getValue(Resource.STRING),
+                plurals = resources.getValue(Resource.PLURAL)
+            )
+
+            outputJsonFile.apply {
+                parentFile.mkdirs()
+                writeText(Json.encodeToString(result))
+            }
         }
     }
 

@@ -25,14 +25,12 @@ public class WeblateAndroidPlugin : Plugin<Project> {
             val androidComponents = project.extensions
                 .getByType(ApplicationAndroidComponentsExtension::class.java)
 
-            androidComponents.onVariants { variant ->
-                // Default configuration for extension
-                extension.metadataFile.convention(
-                    project.layout.buildDirectory.file(
-                        "outputs/weblate/${variant.name}/metadata.json"
-                    )
-                )
+            // Default configuration for extension
+            extension.metadataDir.convention(
+                project.layout.buildDirectory.dir("outputs/weblate/")
+            )
 
+            androidComponents.onVariants { variant ->
                 // Metadata generation task
                 val metadataTaskProvider = project.tasks.register(
                     "generateMetadataForWeblate${variant.name.replaceFirstChar { it.uppercase() }}",
@@ -41,8 +39,10 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.group = Constants.WEBLATE_TASK_GROUP
                     task.description = GenerateMetadataTask.TASK_DESCRIPTION
                     task.packageName.set(variant.applicationId)
-                    task.versionCode.set(variant.outputs.first().versionCode.map { it.toLong() })
-                    task.outputFile.set(extension.metadataFile)
+                    task.versionCodes.set(variant.outputs.map { output ->
+                        output.versionCode.get()
+                    })
+                    task.outputDir.set(extension.metadataDir.dir(variant.name))
                 }
 
                 variant.artifacts.use(metadataTaskProvider)
@@ -59,7 +59,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.dependsOn(metadataTaskProvider)
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set("${extension.serverUrl.get()}/api/components/${extension.project.get()}/${extension.component.get()}/addons/kotlin-sdk/builds/")
-                    task.metadataFile.set(extension.metadataFile)
+                    task.metadataDir.set(extension.metadataDir.dir(variant.name))
                 }
 
                 // Config generation task

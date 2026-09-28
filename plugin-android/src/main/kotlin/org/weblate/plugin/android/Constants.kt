@@ -24,4 +24,6 @@ internal object Constants {
      * Default task group for the plugin
      */
     const val WEBLATE_TASK_GROUP = "weblate"
+
+    const val FILE_METADATA = "org.weblate.metadata.json"
 }
