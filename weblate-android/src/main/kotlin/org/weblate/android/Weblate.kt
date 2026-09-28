@@ -38,8 +38,6 @@ import kotlinx.serialization.json.decodeFromStream
 import org.weblate.android.model.Artifact
 import org.weblate.android.model.Manifest
 import org.weblate.android.work.WeblateWorker
-import org.weblate.android.work.WeblateWorker.Companion.ONE_TIME_WEBLATE_WORKER
-import org.weblate.android.work.WeblateWorker.Companion.PERIODIC_WEBLATE_WORKER
 
 /**
  * Primary way to interact with the Weblate library.
@@ -84,7 +82,7 @@ public class Weblate(private val context: Context) {
     /**
      * Schedules daily localization update for current locale
      */
-    public fun scheduleLocalizationUpdate(): Operation {
+    public fun scheduleDailyLocalizationUpdate() {
         val periodicWorkRequest = PeriodicWorkRequestBuilder<WeblateWorker>(
             repeatInterval = 1.days.toJavaDuration(),
             flexTimeInterval = 1.hours.toJavaDuration()
@@ -99,7 +97,7 @@ public class Weblate(private val context: Context) {
             .setConstraints(constraints)
 
         Log.i(TAG, "Scheduling periodic localization updates!")
-        return WorkManager.getInstance(context)
+        WorkManager.getInstance(context)
             .enqueueUniquePeriodicWork(
                 PERIODIC_WEBLATE_WORKER,
                 ExistingPeriodicWorkPolicy.KEEP,
@@ -108,15 +106,31 @@ public class Weblate(private val context: Context) {
     }
 
     /**
-     * Triggers an immediate localization update for current locale
+     * Cancels previously scheduled daily localization update
      */
-    public fun triggerLocalizationUpdate(): Operation {
+    public fun cancelDailyLocalizationUpdate() {
+        WorkManager.getInstance(context)
+            .cancelUniqueWork(PERIODIC_WEBLATE_WORKER)
+    }
+
+    /**
+     * Triggers an immediate one-time localization update for current locale
+     */
+    public fun triggerLocalizationUpdate() {
         val workRequest = OneTimeWorkRequestBuilder<WeblateWorker>()
             .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
             .build()
 
-        return WorkManager.getInstance(context)
+        WorkManager.getInstance(context)
             .enqueueUniqueWork(ONE_TIME_WEBLATE_WORKER, ExistingWorkPolicy.KEEP, workRequest)
+    }
+
+    /**
+     * Cancels the ongoing one-time localization update
+     */
+    public fun cancelLocalizationUpdate() {
+        WorkManager.getInstance(context)
+            .cancelUniqueWork(ONE_TIME_WEBLATE_WORKER)
     }
 
     /**
@@ -174,7 +188,10 @@ public class Weblate(private val context: Context) {
             }
     }
 
-    internal companion object {
+    public companion object {
+        public const val PERIODIC_WEBLATE_WORKER: String = "PERIODIC_WEBLATE_WORKER"
+        public const val ONE_TIME_WEBLATE_WORKER: String = "ONE_TIME_WEBLATE_WORKER"
+
         private const val DIR_WEBLATE = "weblate"
         private const val DIR_CONFIG = "config"
         private const val DIR_RESOURCES = "resources"

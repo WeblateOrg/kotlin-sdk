@@ -10,10 +10,7 @@ import org.weblate.android.Weblate
 
 class WeblateApp : Application() {
 
-    lateinit var weblate: Weblate
-
     override fun onCreate() {
         super.onCreate()
-        weblate = Weblate(this)
     }
 }

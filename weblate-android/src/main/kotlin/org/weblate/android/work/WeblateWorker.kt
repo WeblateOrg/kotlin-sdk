@@ -19,6 +19,7 @@ import org.weblate.android.Weblate
 internal class WeblateWorker(context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
 
+    private val TAG = WeblateWorker::class.java.simpleName
     private val weblate = Weblate(context.applicationContext as Application)
 
     override suspend fun doWork(): Result {
@@ -31,11 +32,5 @@ internal class WeblateWorker(context: Context, workerParameters: WorkerParameter
             Log.e(TAG, "Failed to check localization updates", exception)
             return Result.failure()
         }
-    }
-
-    internal companion object {
-        private const val TAG = "WeblateWorker"
-        internal const val PERIODIC_WEBLATE_WORKER = "PERIODIC_WEBLATE_WORKER"
-        internal const val ONE_TIME_WEBLATE_WORKER = "ONE_TIME_WEBLATE_WORKER"
     }
 }

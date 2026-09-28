@@ -13,8 +13,6 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val application: Application) : AndroidViewModel(application) {
 
-    private val app = application as WeblateApp
-
     fun updateResources() {
         viewModelScope.launch {
             val locale = Locale.Builder()
