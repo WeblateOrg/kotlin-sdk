@@ -4,6 +4,9 @@
 #
 
 [versions]
+# Version code for the plugin and library
+weblate = "1.0.0-alpha01"
+
 agp = "9.4.1"
 core = "1.19.1"
 dokka = "2.2.0"
