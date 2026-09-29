@@ -8,28 +8,19 @@
 weblate = "1.0.0-alpha01"
 
 agp = "9.4.1"
-core = "1.19.1"
 dokka = "2.2.0"
 gradle = "2.2.1"
+json = "20260814"
 kotlin = "2.4.20"
-ktor = "3.6.0"
-serialization-json = "1.12.0-RC"
 work = "2.12.0"
 
 [libraries]
 android-gradle-plugin-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
-androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "core" }
 androidx-work = { module = "androidx.work:work-runtime", version.ref = "work" }
-jetbrains-kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
-ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
-ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+json = { module = "org.json:json", version.ref = "json" }
 
 [plugins]
 android-library-core = { id = "com.android.library", version.ref = "agp" }
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "gradle" }
 jetbrains-dokka-html = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-jetbrains-dokka-java = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -15,34 +15,24 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.Operation
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.cache.HttpCache
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.prepareGet
-import io.ktor.client.statement.bodyAsBytes
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.kotlinx.json.json
 import java.io.File
+import java.net.URL
 import java.util.Locale
 import java.util.ServiceLoader
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.toJavaDuration
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromStream
-import org.weblate.android.model.Artifact
-import org.weblate.android.model.Manifest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import org.weblate.android.work.WeblateWorker
 
 /**
  * Primary way to interact with the Weblate library.
  */
-@OptIn(ExperimentalSerializationApi::class)
 public class Weblate(private val context: Context) {
 
     private val TAG = Weblate::class.java.simpleName
@@ -80,10 +70,14 @@ public class Weblate(private val context: Context) {
      * Downloads localization update for the given locale, if available.
      */
     public suspend fun download(locale: Locale) {
-        downloadManifest()?.locales?.get(locale.language)?.let { artifact ->
-            Log.i(TAG, "Downloading localization updates for ${locale.language}")
-            download(artifact)
-        }
+        downloadManifest()
+            ?.getJSONObject("locales")
+            ?.getJSONObject(locale.language)
+            ?.getString("sha256") // sha256 also serves as the fileName for the artifact
+            ?.let { fileName ->
+                Log.i(TAG, "Downloading localization updates for ${locale.language}")
+                downloadArtifact(fileName)
+            }
     }
 
     /**
@@ -143,22 +137,21 @@ public class Weblate(private val context: Context) {
     /**
      * Downloads public manifest of resources pointing to localization updates from CDN server
      */
-    private suspend fun downloadManifest(): Manifest? {
-        return httpClient
-            .prepareGet("${configProvider.cdnUrl}/${packageName}/$versionCode/$FILE_MANIFEST")
-            .execute { response ->
-                return@execute when (response.status) {
-                    HttpStatusCode.OK -> {
-                        manifest.writeBytes(response.bodyAsBytes())
-                        json.decodeFromStream(manifest.inputStream())
-                    }
-
-                    else -> {
-                        Log.e(TAG, "Failed to download manifest: ${response.status.description}")
-                        null
+    private suspend fun downloadManifest(): JSONObject? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val url = URL("${configProvider.cdnUrl}/${packageName}/$versionCode/$FILE_MANIFEST")
+                url.openStream().use { inputStream ->
+                    manifest.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
                     }
                 }
+                JSONObject(manifest.readText())
+            } catch (exception: Exception) {
+                Log.e(TAG, "Failed to download manifest", exception)
+                null
             }
+        }
     }
 
     /**
@@ -177,17 +170,19 @@ public class Weblate(private val context: Context) {
     /**
      * Downloads the given resources artifact
      */
-    private suspend fun download(artifact: Artifact) {
-        httpClient.prepareGet("${configProvider.cdnUrl}/artifacts/${artifact.sha256}.arsc")
-            .execute { response ->
-                when (response.status) {
-                    HttpStatusCode.OK -> resources.writeBytes(response.bodyAsBytes())
-
-                    else -> {
-                        Log.e(TAG, "Failed to download resources: ${response.status.description}")
+    private suspend fun downloadArtifact(fileName: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val url = URL("${configProvider.cdnUrl}/artifacts/${fileName}.arsc")
+                url.openStream().use { inputStream ->
+                    resources.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
                     }
                 }
+            } catch (exception: Exception) {
+                Log.e(TAG, "Failed to download resources artifact", exception)
             }
+        }
     }
 
     public companion object {
@@ -204,20 +199,6 @@ public class Weblate(private val context: Context) {
         private val configProvider: ConfigProvider by lazy {
             ServiceLoader.load(ConfigProvider::class.java, ConfigProvider::class.java.classLoader)
                 .first()
-        }
-
-        private val json = Json {
-            prettyPrint = true
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-            explicitNulls = true
-        }
-
-        private val httpClient = HttpClient {
-            install(ContentNegotiation) {
-                json(json)
-            }
-            install(HttpCache)
         }
     }
 }

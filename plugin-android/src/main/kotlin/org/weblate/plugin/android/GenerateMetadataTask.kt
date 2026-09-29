@@ -17,8 +17,8 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.json.JSONObject
 import org.weblate.plugin.android.Constants.FILE_METADATA
-import org.weblate.plugin.android.Constants.Json
 import org.weblate.plugin.android.model.Metadata
 import org.weblate.plugin.android.model.Resource
 
@@ -60,7 +60,7 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
 
             outputJsonFile.apply {
                 parentFile.mkdirs()
-                writeText(Json.encodeToString(result))
+                writeText(JSONObject(result).toString())
             }
         }
     }

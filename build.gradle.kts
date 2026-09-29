@@ -5,9 +5,7 @@
 
 plugins {
     alias(libs.plugins.android.library.core) apply false
-    alias(libs.plugins.jetbrains.kotlin.serialization) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
     alias(libs.plugins.gradle.plugin.publish) apply false
     alias(libs.plugins.jetbrains.dokka.html) apply false
-    alias(libs.plugins.jetbrains.dokka.java) apply false
 }

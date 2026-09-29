@@ -5,20 +5,7 @@
 
 package org.weblate.plugin.android
 
-import kotlinx.serialization.json.Json
-
 internal object Constants {
-
-    /**
-     * Reusable configuration for JSON serialization
-     */
-    val Json = Json {
-        prettyPrint = true
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        explicitNulls = false
-        encodeDefaults = true
-    }
 
     /**
      * Default task group for the plugin
