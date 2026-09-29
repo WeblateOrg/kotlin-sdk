@@ -70,6 +70,17 @@ dependencies {
     implementation(libs.ktor.client.okhttp)
 }
 
+dokka {
+    pluginsConfiguration.html {
+        customStyleSheets.from(layout.projectDirectory.file("../docs/dokka/weblate.css"))
+        customAssets.from(
+            layout.projectDirectory.file("../docs/dokka/Logo-Darktext.svg"),
+            layout.projectDirectory.file("../docs/dokka/Logo-Whitetext.svg"),
+            layout.projectDirectory.file("../docs/dokka/logo-icon.svg"),
+        )
+    }
+}
+
 // To generate documentation in Javadoc
 val dokkaJavadocJar = tasks.register<Jar>("dokkaJavadocJar") {
     description = "A Javadoc JAR containing Dokka Javadoc"

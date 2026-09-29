@@ -29,3 +29,9 @@ path = [
   "sample-android/gradle/wrapper/**"
 ]
 precedence = "aggregate"
+
+[[annotations]]
+SPDX-FileCopyrightText = "Michal Čihař <michal@weblate.org>"
+SPDX-License-Identifier = "Apache-2.0"
+path = ["docs/dokka/*.svg", "docs/dokka/README.md"]
+precedence = "aggregate"
