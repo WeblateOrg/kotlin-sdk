@@ -8,7 +8,6 @@
 import com.android.build.api.dsl.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.abi.BinariesSource
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 val signingKey: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY")
@@ -18,9 +17,7 @@ val shouldSignRelease: Boolean
 
 plugins {
     alias(libs.plugins.android.library.core)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.jetbrains.dokka.html)
-    alias(libs.plugins.jetbrains.dokka.java)
     `maven-publish`
     signing
 }
@@ -49,6 +46,7 @@ configure<LibraryExtension> {
     publishing {
         singleVariant("release") {
             withSourcesJar()
+            withJavadocJar()
         }
     }
 
@@ -59,15 +57,15 @@ configure<LibraryExtension> {
 }
 
 dependencies {
-    implementation(libs.androidx.core)
     implementation(libs.androidx.work)
+    implementation(libs.json)
+}
 
-    implementation(libs.jetbrains.kotlin.serialization)
-
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.content.negotiation)
-    implementation(libs.ktor.serialization.json)
-    implementation(libs.ktor.client.okhttp)
+// Fixes warning about API being provided by Android
+configurations {
+    all {
+        exclude(group = "org.json", module = "json")
+    }
 }
 
 dokka {
@@ -79,13 +77,6 @@ dokka {
             layout.projectDirectory.file("../docs/dokka/logo-icon.svg"),
         )
     }
-}
-
-// To generate documentation in Javadoc
-val dokkaJavadocJar = tasks.register<Jar>("dokkaJavadocJar") {
-    description = "A Javadoc JAR containing Dokka Javadoc"
-    from(tasks.dokkaGeneratePublicationJavadoc.flatMap { it.outputDirectory })
-    archiveClassifier.set("javadoc")
 }
 
 publishing {
@@ -100,8 +91,6 @@ publishing {
             afterEvaluate {
                 from(components["release"])
             }
-
-            artifact(dokkaJavadocJar)
 
             pom {
                 name = "Weblate - Android"

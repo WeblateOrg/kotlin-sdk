@@ -10,7 +10,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm)
     alias(libs.plugins.gradle.plugin.publish)
-    alias(libs.plugins.jetbrains.kotlin.serialization)
     `maven-publish`
 }
 
@@ -21,7 +20,7 @@ kotlin {
 
 dependencies {
     compileOnly(libs.android.gradle.plugin.api)
-    implementation(libs.jetbrains.kotlin.serialization)
+    implementation(libs.json)
 }
 
 gradlePlugin {
