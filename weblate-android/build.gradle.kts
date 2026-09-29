@@ -38,9 +38,9 @@ configure<LibraryExtension> {
         version = release(37)
     }
     defaultConfig {
-        minSdk = 30
+        minSdk = 21
         aarMetadata {
-            minCompileSdk = 30
+            minCompileSdk = 21
         }
     }
     publishing {
