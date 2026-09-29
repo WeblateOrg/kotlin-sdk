@@ -8,7 +8,9 @@ package org.weblate.android
 import android.content.Context
 import android.content.res.loader.ResourcesLoader
 import android.content.res.loader.ResourcesProvider
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -33,6 +35,7 @@ import org.weblate.android.work.WeblateWorker
 /**
  * Primary way to interact with the Weblate library.
  */
+@RequiresApi(Build.VERSION_CODES.R)
 public class Weblate(private val context: Context) {
 
     private val TAG = Weblate::class.java.simpleName
