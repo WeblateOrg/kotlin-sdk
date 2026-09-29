@@ -68,3 +68,4 @@ ci:
   - renovate-config-validator
   - reuse
   - kingfisher-auto
+exclude: ^.*\.svg$

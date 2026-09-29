@@ -1,0 +1,219 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Michal Čihař <michal@weblate.org>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+@import url("https://weblate.org/static/weblate_fonts/source-sans-3.css");
+@import url("https://weblate.org/static/weblate_fonts/source-code-pro.css");
+
+/* Use html specificity so these win even when Dokka loads its UI kit last. */
+html:root {
+    --weblate-brand: #107a62;
+    --weblate-brand-hover: #0b5847;
+    --weblate-focus: rgb(16 122 98 / 50%);
+    --weblate-highlight: rgb(16 122 98 / 15%);
+    --weblate-background: #fff;
+    --weblate-surface: #f8f9fb;
+    --weblate-foreground: #2a3744;
+    --weblate-muted: #5a6570;
+    --weblate-border: #e1e4e8;
+    --weblate-icon-filter: invert(1);
+    --dokka-logo-image-url: url("../images/Logo-Darktext.svg");
+    --dokka-logo-width: 112px;
+    --dokka-logo-height: 28px;
+
+    --font-family-default: "Source Sans 3", system-ui, sans-serif;
+    --font-family-mono: "Source Code Pro", monospace;
+    --default-font-family: var(--font-family-default);
+    --default-monospace-font-family: var(--font-family-mono);
+    --ring-font-family: var(--font-family-default);
+    --ring-font-family-monospace: var(--font-family-mono);
+
+    --color-key-blue: var(--weblate-brand);
+    --color-key-blue-hover: var(--weblate-brand-hover);
+    --color-key-blue-50: var(--weblate-focus);
+    --hover-link-color: var(--weblate-brand-hover);
+    --active-tab-border-color: var(--weblate-brand);
+    --active-section-color: var(--weblate-brand);
+    --sidemenu-section-active-color: var(--weblate-brand);
+    --color-background: var(--weblate-background);
+    --background-color: var(--weblate-background);
+    --color-background-page: var(--weblate-background);
+    --color-background-page-dt: var(--weblate-background);
+    --color-background-nav: var(--weblate-surface);
+    --color-background-nav-dt: var(--weblate-surface);
+    --color-background-footer: var(--weblate-surface);
+    --color-background-footer-dt: var(--weblate-surface);
+    --color-text: var(--weblate-foreground);
+    --color-text-dt: var(--weblate-foreground);
+    --color-text-light: var(--weblate-muted);
+    --color-text-light-dt: var(--weblate-muted);
+    --color-text-nav-dt: var(--weblate-foreground);
+    --default-font-color: var(--weblate-foreground);
+    --text-color: var(--weblate-foreground);
+    --border-color: var(--weblate-border);
+    --text-outline: var(--weblate-border);
+    --toc-color: var(--weblate-foreground);
+    --ring-main-color: var(--weblate-brand);
+    --ring-main-hover-color: var(--weblate-brand-hover);
+    --ring-link-color: var(--weblate-brand);
+    --ring-link-hover-color: var(--weblate-brand-hover);
+    --ring-selected-background-color: var(--weblate-highlight);
+}
+
+html.theme-dark {
+    --weblate-brand: #2eccaa;
+    --weblate-brand-hover: #67dec4;
+    --weblate-focus: rgb(46 204 170 / 50%);
+    --weblate-highlight: rgb(46 204 170 / 15%);
+    --weblate-background: #131416;
+    --weblate-surface: #1a1c1e;
+    --weblate-foreground: #cfd0d0;
+    --weblate-muted: #9ca0a5;
+    --weblate-border: #303335;
+    --weblate-icon-filter: none;
+    --dokka-logo-image-url: url("../images/Logo-Whitetext.svg");
+}
+
+/* The header has a permanent theme-dark class, independent of the page theme. */
+html .navigation {
+    --text-color: var(--weblate-foreground);
+    --default-font-color: var(--weblate-foreground);
+    --color-background-hover: var(--weblate-highlight);
+    --color-w10: var(--weblate-highlight);
+    --color-w16: var(--weblate-highlight);
+    --color-w21: var(--weblate-highlight);
+    background-color: var(--weblate-surface);
+    color: var(--weblate-foreground);
+}
+
+html .navigation-controls,
+html .library-version {
+    background-color: var(--weblate-surface);
+}
+
+html .library-name--link::before {
+    background-size: contain;
+    flex-shrink: 0;
+}
+
+html .sidebar {
+    background-color: var(--weblate-surface);
+    border-right-color: var(--weblate-border);
+}
+
+html .toc--part[data-active] > .toc--row .toc--button,
+html .toc--part[data-active] > .toc--row .toc--link {
+    background: var(--weblate-highlight);
+    color: var(--weblate-brand);
+}
+
+html .toc--part[data-active] > .toc--row .toc--button:hover,
+html .toc--part[data-active] > .toc--row .toc--link:hover {
+    background: var(--weblate-highlight);
+    color: var(--weblate-brand-hover);
+}
+
+html .toc--button::after,
+html .theme-dark_mobile .toc--button::after,
+html .toc--part[data-active] > .toc--row .toc--button::after,
+html .navigation .button_dropdown::after,
+html .theme-dark_mobile .ui-kit-icon {
+    filter: var(--weblate-icon-filter);
+}
+
+html .dropdown--header {
+    color: var(--weblate-foreground);
+    border-bottom-color: var(--weblate-border);
+}
+
+html .dropdown--option:hover,
+html .dropdown--option_active {
+    background-color: var(--weblate-highlight);
+}
+
+html .checkbox--icon,
+html .dropdown--option-icon_selected {
+    filter: var(--weblate-icon-filter);
+}
+
+html .main-content a:not([data-name]) {
+    --text-color: var(--weblate-brand);
+}
+
+html .main-content a:not([data-name]):hover {
+    --text-color: var(--weblate-brand-hover);
+}
+
+html .anchor-highlight {
+    box-shadow: 0 0 0 0.2em var(--weblate-highlight);
+}
+
+/* Keep Dokka's light-on-dark search UI, but brand its match highlights. */
+html .template-wrapper strong {
+    background: var(--weblate-highlight);
+}
+
+/* Render white header button artwork independently of hover and focus colors. */
+html .navigation-controls--btn_theme,
+html .navigation-controls--btn_toc,
+html .filter-section--dropdown-toggle_as-filters {
+    background-image: none;
+}
+
+html .navigation-controls--btn_theme::before,
+html .navigation-controls--btn_toc::before,
+html .filter-section--dropdown-toggle::before {
+    content: "";
+    width: 24px;
+    height: 24px;
+    background: var(--weblate-control-image) center / contain no-repeat;
+    filter: var(--weblate-icon-filter);
+}
+
+html .navigation-controls--btn_theme {
+    --weblate-control-image: url("../images/theme-toggle.svg");
+}
+
+html .navigation-controls--btn_toc {
+    --weblate-control-image: url("../images/burger.svg");
+}
+
+html .filter-section--dropdown-toggle {
+    --weblate-control-image: url("../images/filter.svg");
+}
+
+html .filter-section--dropdown-toggle:not(.filter-section--dropdown-toggle_as-filters)::before {
+    content: none;
+}
+
+html .navigation .ui-kit-icon {
+    filter: var(--weblate-icon-filter);
+}
+
+html #pages-search {
+    color: var(--weblate-foreground);
+}
+
+html #pages-search svg path {
+    fill: currentColor;
+}
+
+@media (max-width: 899px) {
+    html .filter-section--dropdown-toggle {
+        background-image: none;
+    }
+
+    html .filter-section--dropdown-toggle:not(.filter-section--dropdown-toggle_as-filters)::before {
+        content: "";
+    }
+
+    html .library-name--link {
+        font-size: 14px;
+    }
+
+    html .library-name--link::before {
+        width: 96px;
+        height: 24px;
+    }
+}
