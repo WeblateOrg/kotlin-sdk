@@ -16,7 +16,6 @@ SPDX-License-Identifier = "GPL-3.0-or-later"
 path = [
   ".gitignore",
   "README.md",
-  "**/api/**",
   "sample-android/app/src/main/res/resources.properties",
 ]
 precedence = "aggregate"
