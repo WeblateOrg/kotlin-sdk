@@ -5,17 +5,17 @@
 
 package org.weblate.sample;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.weblate.android.Weblate;
 import org.weblate.sample.databinding.ActivityChildBinding;
 
 public class ChildActivity extends AppCompatActivity {
 
-  private Weblate weblate;
+  private WeblateApp app;
   private ActivityChildBinding binding;
 
   @Override
@@ -24,7 +24,11 @@ public class ChildActivity extends AppCompatActivity {
     binding = ActivityChildBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
 
-    weblate = new Weblate(this);
-    binding.button.setOnClickListener(v -> weblate.triggerLocalizationUpdate());
+    app = (WeblateApp) getApplication();
+    binding.button.setOnClickListener(v -> {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        app.getWeblate().triggerLocalizationUpdate();
+      }
+    });
   }
 }

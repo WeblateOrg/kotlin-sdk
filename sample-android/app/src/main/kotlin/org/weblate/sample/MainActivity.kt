@@ -9,7 +9,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -103,7 +102,10 @@ fun ScreenContent(onUpdateResources: () -> Unit = {}, onSwitchActivity: () -> Un
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            Button(onClick = onUpdateResources) {
+            Button(
+                onClick = onUpdateResources,
+                enabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+            ) {
                 Text(text = stringResource(R.string.update))
             }
 
