@@ -48,14 +48,13 @@ public class Weblate(private val context: Context) {
         get() = File(weblateDir, DIR_CONFIG)
 
     private val resourcesDir: File
-        get() = File(weblateDir, DIR_RESOURCES)
+        get() = File(weblateDir, "$DIR_RESOURCES/$versionCode")
 
     private val manifest: File
         get() = File(configDir, FILE_MANIFEST)
 
     private val resources: File
         get() = File(resourcesDir, FILE_RESOURCES)
-            .resolve(versionCode.toString())
 
     init {
         configDir.mkdirs()
