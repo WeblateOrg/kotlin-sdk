@@ -26,7 +26,7 @@ android {
     defaultConfig {
         applicationId = "org.weblate.sample"
         minSdk {
-            version = release(30)
+            version = release(26)
         }
         targetSdk {
             version = release(37)

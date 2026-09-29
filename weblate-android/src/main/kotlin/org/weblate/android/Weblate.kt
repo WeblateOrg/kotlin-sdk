@@ -5,32 +5,24 @@
 
 package org.weblate.android
 
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.res.loader.ResourcesLoader
 import android.content.res.loader.ResourcesProvider
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.work.BackoffPolicy
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import java.io.File
 import java.net.URL
 import java.util.Locale
 import java.util.ServiceLoader
-import kotlin.time.Duration.Companion.days
-import kotlin.time.Duration.Companion.hours
-import kotlin.time.toJavaDuration
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import org.weblate.android.work.WeblateWorker
+import org.weblate.android.service.WeblateJobService
 
 /**
  * Primary way to interact with the Weblate library.
@@ -45,6 +37,9 @@ public class Weblate(private val context: Context) {
     private val versionCode = context.packageManager
         .getPackageInfo(packageName, 0)
         .longVersionCode
+
+    private val jobScheduler =
+        context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
     private val weblateDir: File
         get() = File(context.filesDir, DIR_WEBLATE)
@@ -87,54 +82,53 @@ public class Weblate(private val context: Context) {
      * Schedules daily localization update for current locale
      */
     public fun scheduleDailyLocalizationUpdate() {
-        val periodicWorkRequest = PeriodicWorkRequestBuilder<WeblateWorker>(
-            repeatInterval = 1.days.toJavaDuration(),
-            flexTimeInterval = 1.hours.toJavaDuration()
-        )
+        if (isJobAlreadyScheduled(JOB_ID_WEBLATE_PERIODIC)) {
+            Log.i(TAG, "Periodic localization update already enqueued. Skipping...")
+            return
+        }
 
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .build()
-
-        periodicWorkRequest
-            .setBackoffCriteria(BackoffPolicy.LINEAR, 4.hours.toJavaDuration())
-            .setConstraints(constraints)
+        val componentName = ComponentName(context, WeblateJobService::class.java)
+        val jobBuilder = JobInfo.Builder(JOB_ID_WEBLATE_PERIODIC, componentName)
+            .setPeriodic(TimeUnit.DAYS.toMillis(1), TimeUnit.HOURS.toMillis(1))
+            .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
+            .setBackoffCriteria(TimeUnit.HOURS.toMillis(4), JobInfo.BACKOFF_POLICY_LINEAR)
 
         Log.i(TAG, "Scheduling periodic localization updates!")
-        WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork(
-                PERIODIC_WEBLATE_WORKER,
-                ExistingPeriodicWorkPolicy.KEEP,
-                periodicWorkRequest.build()
-            )
+        jobScheduler.schedule(jobBuilder.build())
     }
 
     /**
      * Cancels previously scheduled daily localization update
      */
     public fun cancelDailyLocalizationUpdate() {
-        WorkManager.getInstance(context)
-            .cancelUniqueWork(PERIODIC_WEBLATE_WORKER)
+        jobScheduler.cancel(JOB_ID_WEBLATE_PERIODIC)
     }
 
     /**
      * Triggers an immediate one-time localization update for current locale
      */
     public fun triggerLocalizationUpdate() {
-        val workRequest = OneTimeWorkRequestBuilder<WeblateWorker>()
-            .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
-            .build()
+        if (isJobAlreadyScheduled(JOB_ID_WEBLATE_ONESHOT)) {
+            Log.i(TAG, "One-time localization update already enqueued. Skipping...")
+            return
+        }
 
-        WorkManager.getInstance(context)
-            .enqueueUniqueWork(ONE_TIME_WEBLATE_WORKER, ExistingWorkPolicy.KEEP, workRequest)
+        val componentName = ComponentName(context, WeblateJobService::class.java)
+        val jobBuilder = JobInfo.Builder(JOB_ID_WEBLATE_ONESHOT, componentName).apply {
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> setExpedited(true)
+                else -> setMinimumLatency(0)
+            }
+        }
+
+        jobScheduler.schedule(jobBuilder.build())
     }
 
     /**
      * Cancels the ongoing one-time localization update
      */
     public fun cancelLocalizationUpdate() {
-        WorkManager.getInstance(context)
-            .cancelUniqueWork(ONE_TIME_WEBLATE_WORKER)
+        jobScheduler.cancel(JOB_ID_WEBLATE_ONESHOT)
     }
 
     /**
@@ -188,9 +182,25 @@ public class Weblate(private val context: Context) {
         }
     }
 
+    /**
+     * Whether given job is already scheduled
+     */
+    private fun isJobAlreadyScheduled(id: Int): Boolean {
+        return jobScheduler.allPendingJobs.any { jobInfo -> jobInfo.id == id }
+    }
+
     public companion object {
-        public const val PERIODIC_WEBLATE_WORKER: String = "PERIODIC_WEBLATE_WORKER"
-        public const val ONE_TIME_WEBLATE_WORKER: String = "ONE_TIME_WEBLATE_WORKER"
+        private const val JOB_ID_OFFSET = 50_000
+
+        /**
+         * Job ID of periodic jobs for checking localization updates
+         */
+        public const val JOB_ID_WEBLATE_PERIODIC: Int = JOB_ID_OFFSET + 1
+
+        /**
+         * Job ID of one-shot jobs for checking localization updates
+         */
+        public const val JOB_ID_WEBLATE_ONESHOT: Int = JOB_ID_OFFSET + 2
 
         private const val DIR_WEBLATE = "weblate"
         private const val DIR_CONFIG = "config"

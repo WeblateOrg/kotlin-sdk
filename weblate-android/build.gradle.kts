@@ -57,8 +57,9 @@ configure<LibraryExtension> {
 }
 
 dependencies {
-    implementation(libs.androidx.work)
     implementation(libs.json)
+    implementation(libs.androidx.annotations)
+    implementation(libs.jetbrains.kotlinx.coroutines)
 }
 
 // Fixes warning about API being provided by Android

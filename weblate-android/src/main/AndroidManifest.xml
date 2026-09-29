@@ -7,4 +7,12 @@
 
   <!-- For checking and downloading localization updates -->
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+  <application>
+    <service
+      android:name=".service.WeblateJobService"
+      android:permission="android.permission.BIND_JOB_SERVICE"
+      android:exported="false" />
+  </application>
 </manifest>
