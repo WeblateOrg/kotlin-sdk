@@ -21,6 +21,7 @@ import java.security.MessageDigest
 import java.util.Locale
 import java.util.ServiceLoader
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.HttpsURLConnection
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -46,22 +47,14 @@ public class Weblate(private val context: Context) {
     private val weblateDir: File
         get() = File(context.filesDir, DIR_WEBLATE)
 
-    private val configDir: File
-        get() = File(weblateDir, DIR_CONFIG)
-
     private val resourcesDir: File
         get() = File(weblateDir, "$DIR_RESOURCES/$versionCode")
-
-    private val manifestFile: File
-        get() = File(configDir, FILE_MANIFEST)
 
     private val resourceFile: File
         get() = File(resourcesDir, FILE_RESOURCES)
 
     init {
-        configDir.mkdirs()
         resourcesDir.mkdirs()
-
         loadResources()
     }
 
@@ -139,12 +132,12 @@ public class Weblate(private val context: Context) {
         return withContext(Dispatchers.IO) {
             try {
                 val url = URL("${configProvider.cdnUrl}/${packageName}/$versionCode/$FILE_MANIFEST")
-                url.openStream().use { inputStream ->
-                    manifestFile.outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
-                    }
+                with((url.openConnection() as HttpsURLConnection)) {
+                    connectTimeout = 20 * 1000
+                    readTimeout = 20 * 1000
+
+                    JSONObject(getInputStream().bufferedReader().readText())
                 }
-                JSONObject(manifestFile.readText())
             } catch (exception: Exception) {
                 Log.e(TAG, "Failed to download manifest", exception)
                 null
@@ -175,9 +168,14 @@ public class Weblate(private val context: Context) {
         withContext(Dispatchers.IO) {
             try {
                 val url = URL("${configProvider.cdnUrl}/artifacts/${fileName}.arsc")
-                DigestInputStream(url.openStream(), messageDigest).use { inputStream ->
-                    tmpFile.outputStream().use { outputStream ->
-                        inputStream.copyTo(outputStream)
+                with((url.openConnection() as HttpsURLConnection)) {
+                    connectTimeout = 20 * 1000
+                    readTimeout = 20 * 1000
+
+                    DigestInputStream(getInputStream(), messageDigest).use { inputStream ->
+                        tmpFile.outputStream().use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
                     }
                 }
 
@@ -215,7 +213,6 @@ public class Weblate(private val context: Context) {
         public const val JOB_ID_WEBLATE_ONESHOT: Int = JOB_ID_OFFSET + 2
 
         private const val DIR_WEBLATE = "weblate"
-        private const val DIR_CONFIG = "config"
         private const val DIR_RESOURCES = "resources"
 
         private const val FILE_MANIFEST = "manifest.json"
