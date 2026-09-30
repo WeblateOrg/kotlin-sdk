@@ -16,6 +16,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import java.io.File
 import java.net.URL
+import java.security.DigestInputStream
+import java.security.MessageDigest
 import java.util.Locale
 import java.util.ServiceLoader
 import java.util.concurrent.TimeUnit
@@ -50,10 +52,10 @@ public class Weblate(private val context: Context) {
     private val resourcesDir: File
         get() = File(weblateDir, "$DIR_RESOURCES/$versionCode")
 
-    private val manifest: File
+    private val manifestFile: File
         get() = File(configDir, FILE_MANIFEST)
 
-    private val resources: File
+    private val resourceFile: File
         get() = File(resourcesDir, FILE_RESOURCES)
 
     init {
@@ -138,11 +140,11 @@ public class Weblate(private val context: Context) {
             try {
                 val url = URL("${configProvider.cdnUrl}/${packageName}/$versionCode/$FILE_MANIFEST")
                 url.openStream().use { inputStream ->
-                    manifest.outputStream().use { outputStream ->
+                    manifestFile.outputStream().use { outputStream ->
                         inputStream.copyTo(outputStream)
                     }
                 }
-                JSONObject(manifest.readText())
+                JSONObject(manifestFile.readText())
             } catch (exception: Exception) {
                 Log.e(TAG, "Failed to download manifest", exception)
                 null
@@ -167,16 +169,27 @@ public class Weblate(private val context: Context) {
      * Downloads the given resources artifact
      */
     private suspend fun downloadArtifact(fileName: String) {
+        val tmpFile = File(resourcesDir, "$FILE_RESOURCES.tmp")
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+
         withContext(Dispatchers.IO) {
             try {
                 val url = URL("${configProvider.cdnUrl}/artifacts/${fileName}.arsc")
-                url.openStream().use { inputStream ->
-                    resources.outputStream().use { outputStream ->
+                DigestInputStream(url.openStream(), messageDigest).use { inputStream ->
+                    tmpFile.outputStream().use { outputStream ->
                         inputStream.copyTo(outputStream)
                     }
                 }
+
+                // Validate hash to ensure file isn't corrupted
+                require(messageDigest.digest().toHexString() == fileName)
+
+                resourceFile.delete()
+                tmpFile.renameTo(resourceFile)
             } catch (exception: Exception) {
                 Log.e(TAG, "Failed to download resources artifact", exception)
+            } finally {
+                if (tmpFile.exists()) tmpFile.delete()
             }
         }
     }
