@@ -1,6 +1,6 @@
 #
 # SPDX-FileCopyrightText: 2026 Aayush Gupta <https://aayush.io>
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: Apache-2.0
 #
 # This file describes the licensing and copyright situation for files that
 # cannot be annotated directly, for example because of being simply
@@ -12,7 +12,7 @@ version = 1
 
 [[annotations]]
 SPDX-FileCopyrightText = "2026 Aayush Gupta <https://aayush.io>"
-SPDX-License-Identifier = "GPL-3.0-or-later"
+SPDX-License-Identifier = "Apache-2.0"
 path = [
   ".gitignore",
   "README.md",
