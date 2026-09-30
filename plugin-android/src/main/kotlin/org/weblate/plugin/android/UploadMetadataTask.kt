@@ -10,6 +10,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
+import java.time.Duration
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
@@ -38,7 +39,10 @@ internal abstract class UploadMetadataTask : DefaultTask() {
 
     @TaskAction
     fun upload() {
-        val httpClient = HttpClient.newHttpClient()
+        val httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(20))
+            .build()
+
         val token = authToken.get()
         val url = apiUrl.get()
         val rootDir = metadataDir.get().asFile
@@ -61,6 +65,7 @@ internal abstract class UploadMetadataTask : DefaultTask() {
             val payload = File(directory, FILE_METADATA).readText()
             val request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .timeout(Duration.ofSeconds(20))
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer $token")
                 .POST(HttpRequest.BodyPublishers.ofString(payload))
