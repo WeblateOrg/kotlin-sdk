@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 val signingKey: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY")
 val signingPassword: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY_PASSWORD")
 val shouldSignRelease: Boolean
-    get() = !signingKey.isNullOrEmpty() && !signingPassword.isNullOrEmpty()
+    get() = !signingKey.isNullOrEmpty() && signingPassword.isNullOrEmpty()
 
 plugins {
     alias(libs.plugins.android.library.core)
