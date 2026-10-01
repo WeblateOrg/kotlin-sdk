@@ -134,7 +134,7 @@ publishing {
             maven {
                 name = "centralRelease"
                 version = artifactVersion
-                url = uri("https://central.sonatype.com/api/v1/publisher/deployments/download/")
+                url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
                 credentials {
                     username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
                     password = System.getenv("SONATYPE_MAVEN_CENTRAL_PASSWORD")
