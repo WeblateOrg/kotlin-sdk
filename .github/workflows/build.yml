@@ -32,6 +32,7 @@ jobs:
     - run: ./gradlew -p sample-android :app:assembleDebug
 
   snapshot-android:
+    environment: maven-publish
     runs-on: ubuntu-26.04
     if: github.ref == 'refs/heads/main'
 
