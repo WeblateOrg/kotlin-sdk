@@ -81,49 +81,62 @@ dokka {
 
 publishing {
     publications {
-        val artifactVersion = libs.versions.weblate.get()
+        val mavenGroupId = "org.weblate"
+        val mavenArtifactId = "android"
+        fun MavenPublication.setupPom() = pom {
+            name = "Weblate - Android"
+            description = "An android library for syncing localizations directly into apps"
+            url = "https://github.com/WeblateOrg/kotlin-sdk"
+
+            licenses {
+                license {
+                    name = "Apache License 2.0"
+                    url = "https://www.apache.org/licenses/LICENSE-2.0"
+                }
+            }
+
+            scm {
+                url = "https://github.com/WeblateOrg/kotlin-sdk"
+                connection = "scm:git:git@github.com:WeblateOrg/kotlin-sdk.git"
+                developerConnection = "scm:git:git@github.com:WeblateOrg/kotlin-sdk.git"
+            }
+
+            developers {
+                developer {
+                    id = "weblate"
+                    name = "Weblate"
+                    email = "info@weblate.org"
+                }
+            }
+        }
 
         register<MavenPublication>("release") {
-            group = "org.weblate"
-            artifactId = "android"
-            version = artifactVersion
+            group = mavenGroupId
+            artifactId = mavenArtifactId
+            version = libs.versions.weblate.get()
 
             afterEvaluate {
                 from(components["release"])
             }
 
-            pom {
-                name = "Weblate - Android"
-                description = "An android library for syncing localizations directly into apps"
-                url = "https://github.com/WeblateOrg/kotlin-sdk"
+            setupPom()
+        }
 
-                licenses {
-                    license {
-                        name = "Apache License 2.0"
-                        url = "https://www.apache.org/licenses/LICENSE-2.0"
-                    }
-                }
+        register<MavenPublication>("snapshot") {
+            group = mavenGroupId
+            artifactId = mavenArtifactId
+            version = libs.versions.weblate.get() + "-SNAPSHOT"
 
-                scm {
-                    url = "https://github.com/WeblateOrg/kotlin-sdk"
-                    connection = "scm:git:git@github.com:WeblateOrg/kotlin-sdk.git"
-                    developerConnection = "scm:git:git@github.com:WeblateOrg/kotlin-sdk.git"
-                }
-
-                developers {
-                    developer {
-                        id = "weblate"
-                        name = "Weblate"
-                        email = "info@weblate.org"
-                    }
-                }
+            afterEvaluate {
+                from(components["release"])
             }
+
+            setupPom()
         }
 
         repositories {
             maven {
                 name = "centralSnapshot"
-                version = "$artifactVersion-SNAPSHOT"
                 url = uri("https://central.sonatype.com/repository/maven-snapshots/")
                 credentials {
                     username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
@@ -132,7 +145,6 @@ publishing {
             }
             maven {
                 name = "centralRelease"
-                version = artifactVersion
                 url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
                 credentials {
                     username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
