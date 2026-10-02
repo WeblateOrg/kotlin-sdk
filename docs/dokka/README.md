@@ -6,8 +6,10 @@ Android library's Gradle build. Javadoc output uses its existing configuration.
 
 The HTML index includes the root `README.md`. Its first heading must be
 `# Module Kotlin SDK for Weblate`, matching the HTML publication's `moduleName`
-in the Android library's Gradle build. Keep all README content below this heading
-so Dokka includes it in the module documentation.
+in the Android library's Gradle build. Register the include through
+`dokkaSourceSets.configureEach` so Dokka's source analysis picks up the module
+documentation. Keep all README content below this heading so Dokka includes it
+in the module documentation.
 
 The SVGs are copied unchanged from the Weblate graphics repository:
 
