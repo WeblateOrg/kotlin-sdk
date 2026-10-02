@@ -62,6 +62,8 @@ jobs:
 
     - run: ./gradlew publishReleasePublicationToCentralReleaseRepository
       env:
+        PGP_PRIVATE_SIGNING_ID: ${{ secrets.PGP_PRIVATE_SIGNING_ID }}
         PGP_PRIVATE_SIGNING_KEY: ${{ secrets.PGP_PRIVATE_SIGNING_KEY }}
+        PGP_PRIVATE_SIGNING_KEY_PASSWORD: ${{ secrets.PGP_PRIVATE_SIGNING_KEY_PASSWORD }}
         SONATYPE_MAVEN_CENTRAL_USERNAME: ${{ secrets.SONATYPE_MAVEN_CENTRAL_USERNAME }}
         SONATYPE_MAVEN_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_MAVEN_CENTRAL_PASSWORD }}
