@@ -71,6 +71,9 @@ configurations {
 dokka {
     dokkaPublications.html {
         moduleName.set("Kotlin SDK for Weblate")
+    }
+
+    dokkaSourceSets.configureEach {
         includes.from(layout.projectDirectory.file("../README.md"))
     }
 
