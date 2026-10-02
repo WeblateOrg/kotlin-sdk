@@ -52,7 +52,7 @@ jobs:
       with:
         cache-disabled: true
 
-    - run: ./gradlew publishReleasePublicationToCentralSnapshotRepository
+    - run: ./gradlew --warning-mode all publishReleasePublicationToCentralSnapshotRepository
       env:
         PGP_SIGNING_KEY_ID: ${{ secrets.PGP_SIGNING_KEY_ID }}
         PGP_PRIVATE_SIGNING_KEY: ${{ secrets.PGP_PRIVATE_SIGNING_KEY }}
