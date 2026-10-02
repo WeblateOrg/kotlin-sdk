@@ -69,6 +69,11 @@ configurations {
 }
 
 dokka {
+    dokkaPublications.html {
+        moduleName.set("Kotlin SDK for Weblate")
+        includes.from(layout.projectDirectory.file("../README.md"))
+    }
+
     pluginsConfiguration.html {
         customStyleSheets.from(layout.projectDirectory.file("../docs/dokka/weblate.css"))
         customAssets.from(

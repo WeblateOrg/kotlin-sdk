@@ -4,6 +4,11 @@ The HTML documentation uses Dokka's standard layout with an additive Weblate
 stylesheet. Configure the assets through `pluginsConfiguration.html` in the
 Android library's Gradle build. Javadoc output uses its existing configuration.
 
+The HTML index includes the root `README.md`. Its first heading must be
+`# Module Kotlin SDK for Weblate`, matching the HTML publication's `moduleName`
+in the Android library's Gradle build. Keep all README content below this heading
+so Dokka includes it in the module documentation.
+
 The SVGs are copied unchanged from the Weblate graphics repository:
 
 - `Logo-Darktext.svg`: `logo-text/Logo-Darktext.svg`, used in light mode.
