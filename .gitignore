@@ -1,6 +1,10 @@
 # Compiled class file
 *.class
 
+# Release automation output
+__pycache__/
+dist/
+
 # Log file
 *.log
 

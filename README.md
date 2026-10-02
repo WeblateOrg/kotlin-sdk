@@ -151,6 +151,45 @@ Please open an issue with details and expected behavior. The project is written 
 has been mainly tested on Kotlin-only samples. We will be happy to resolve issues, if any, to support
 Java too.
 
+## Releases
+
+The plugin and library share the version in `gradle/libs.versions.toml`. Push a tag
+with that exact version to publish both packages and create a GitHub release with
+generated notes. Manual runs of the **Publish release** workflow must select an
+existing tag; branch runs and tags that do not match the version fail before publishing.
+Versions with prerelease suffixes, such as `1.0.0-alpha01`, are marked as prereleases.
+
+GitHub releases include the Android library AAR, Gradle plugin JAR, and their source
+and documentation JARs. These are the files built by the package publishing jobs,
+with versioned filenames. Each job builds, collects, attests, and uploads its artifacts
+before publishing its package. The GitHub release waits for both package publishing
+jobs to succeed.
+
+Release immutability must be enabled under **Settings → General → Releases → Enable
+release immutability**. All assets are uploaded to a draft before publication locks
+the assets and tag. An interrupted upload leaves a draft that can be completed by
+rerunning the GitHub release job. Published releases are left unchanged on retries;
+correcting their assets requires a new version. Artifact preparation failures are safe
+to retry because package publication has not started. Once both packages have published
+successfully, retry only the GitHub release job to avoid republishing an existing package
+version. If a publication step fails, check whether the registry accepted the package
+before retrying that job.
+
+Build provenance complements the library's Maven PGP signatures. To verify a downloaded
+file's build provenance, use the GitHub CLI:
+
+```sh
+gh attestation verify android-1.0.0-alpha01.aar --repo WeblateOrg/kotlin-sdk
+```
+
+Immutable releases also have a release attestation linking the tag, commit, and assets.
+Verify the release and a downloaded asset with:
+
+```sh
+gh release verify 1.0.0-alpha01 --repo WeblateOrg/kotlin-sdk
+gh release verify-asset 1.0.0-alpha01 android-1.0.0-alpha01.aar --repo WeblateOrg/kotlin-sdk
+```
+
 ## Funding
 
 ### NGI Mobifree Fund

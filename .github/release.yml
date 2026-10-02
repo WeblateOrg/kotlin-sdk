@@ -1,0 +1,21 @@
+# Copyright © Michal Čihař <michal@weblate.org>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# This file is maintained in https://github.com/WeblateOrg/meta/
+
+changelog:
+  exclude:
+    authors:
+    - weblate
+    - hosted-weblate[bot]
+  categories:
+  - title: Changes and improvements
+    labels:
+    - '*'
+    exclude:
+      labels:
+      - dependencies
+  - title: Dependency updates
+    labels:
+    - dependencies
