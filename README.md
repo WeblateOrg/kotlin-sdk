@@ -130,7 +130,7 @@ regenerated to avoid mismatch.
 ### How can I keep my API key private?
 
 You only need the API key to publish the metadata once release build is generated. It's not needed
-for any other tasks. You can read it from the enviornment and fallback to dummy key if not found.
+for any other tasks. You can read it from the environment and fallback to dummy key if not found.
 
 ### How to publish metadata when distrubuting the app on F-Droid?
 
