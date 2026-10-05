@@ -34,7 +34,7 @@ compatibility issues. Expect breaking changes in alpha and snapshot releases.
 
 The updated resources are delivered via read-only CDN and thus the add-on needs
 to be installed on the project on the server side. Once installed, the
-`Configuration` page will share some required values that needs to be supplied
+`Configuration` page will share some required values that need to be supplied
 to the plugin in the next step.
 
 You will also need a private API key for the Gradle plugin to publish generated metadata for the Add-on to
