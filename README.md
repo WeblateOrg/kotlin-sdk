@@ -2,7 +2,7 @@
 
 [![Website](https://img.shields.io/badge/website-weblate.org-blue.svg)](https://weblate.org/)
 
-The Kotlin SDK for Weblate consists of a light-weight Gradle plugin and library for Android projects
+The Kotlin SDK for Weblate consists of a lightweight Gradle plugin and library for Android projects
 to support updating localizations without re-building and re-distributing the software binaries.
 
 <p>
@@ -17,7 +17,7 @@ Part of [Weblate](https://weblate.org/) — a privacy-respecting localization pl
 
 ## Requirements
 
-The compiler plugin and library currently requires the following:
+The compiler plugin and library currently require the following:
 
 - Android Gradle Plugin 9.x
 - Android version 11+ (API 30 / R)
@@ -32,9 +32,10 @@ compatibility issues. Expect breaking changes in alpha and snapshot releases.
 
 ### 1) Installing the Kotlin SDK CDN Add-on
 
-The updated resources are delivered via read-only CDN and thus needs to be installed on the project
-on the server side. Once installed, the `Configuration` page will share some required values which needs
-to be supplied to the plugin in the next step.
+The updated resources are delivered via read-only CDN and thus the add-on needs
+to be installed on the project on the server side. Once installed, the
+`Configuration` page will share some required values that needs to be supplied
+to the plugin in the next step.
 
 You will also need a private API key for the Gradle plugin to publish generated metadata for the Add-on to
 generate resources to distribute via CDN. **You must not share the API key and keep it private.**
