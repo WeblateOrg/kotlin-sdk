@@ -41,7 +41,7 @@ jobs:
     - run: ./gradlew dokkaGeneratePublicationHtml
 
     - name: Verify README inclusion
-      run: grep -Fq 'The Kotlin SDK for Weblate consists of a light-weight Gradle plugin' weblate-android/build/dokka/html/index.html
+      run: grep -Fq 'The Kotlin SDK for Weblate consists of a lightweight Gradle plugin' weblate-android/build/dokka/html/index.html
 
     - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d     # v6.0.0
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
