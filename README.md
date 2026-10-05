@@ -1,14 +1,19 @@
 # Module Kotlin SDK for Weblate
 
-<a href="https://weblate.org/"><img alt="Weblate" src="https://s.weblate.org/cdn/Logo-Darktext-borders.png" height="80px" /></a>
-
-**Weblate is libre software web-based continuous localization system,
-used by over 2500 libre projects and companies in more than 165 countries.**
+[![Website](https://img.shields.io/badge/website-weblate.org-blue.svg)](https://weblate.org/)
 
 The Kotlin SDK for Weblate consists of a light-weight Gradle plugin and library for Android projects
 to support updating localizations without re-building and re-distributing the software binaries.
 
-[![Website](https://img.shields.io/badge/website-weblate.org-blue.svg)](https://weblate.org/)
+<p>
+  <a href="https://weblate.org/">
+    <img alt="Weblate"
+         src="https://s.weblate.org/cdn/Logo-Darktext-borders.png"
+         height="55">
+  </a>
+</p>
+
+Maintained by [Weblate](https://weblate.org/) — a privacy-respecting localization platform built on open-source foundations.
 
 ## Requirements
 
