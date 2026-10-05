@@ -13,7 +13,7 @@ to support updating localizations without re-building and re-distributing the so
   </a>
 </p>
 
-Maintained by [Weblate](https://weblate.org/) — a privacy-respecting localization platform built on open-source foundations.
+Part of [Weblate](https://weblate.org/) — a privacy-respecting localization platform built on open-source foundations.
 
 ## Requirements
 
