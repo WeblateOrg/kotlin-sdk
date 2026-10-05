@@ -3,16 +3,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-@file:OptIn(ExperimentalAbiValidation::class)
-
 import com.android.build.api.dsl.LibraryExtension
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
+import java.time.Duration
+import kotlin.io.encoding.Base64
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 val signingKeyId: String? = System.getenv("PGP_SIGNING_KEY_ID")
 val signingKey: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY")
 val signingPassword: String? = System.getenv("PGP_PRIVATE_SIGNING_KEY_PASSWORD")
+
+val mavenCentralUserName: String? = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
+val mavenCentralPassword: String? = System.getenv("SONATYPE_MAVEN_CENTRAL_PASSWORD")
+
+val mavenGroupId = "org.weblate"
+val mavenArtifactId = "android"
 
 plugins {
     alias(libs.plugins.android.library.core)
@@ -89,8 +98,6 @@ dokka {
 
 publishing {
     publications {
-        val mavenGroupId = "org.weblate"
-        val mavenArtifactId = "android"
         fun MavenPublication.setupPom() = pom {
             name = "Weblate - Android"
             description = "An android library for syncing localizations directly into apps"
@@ -147,18 +154,48 @@ publishing {
                 name = "centralSnapshot"
                 url = uri("https://central.sonatype.com/repository/maven-snapshots/")
                 credentials {
-                    username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
-                    password = System.getenv("SONATYPE_MAVEN_CENTRAL_PASSWORD")
+                    username = mavenCentralUserName
+                    password = mavenCentralPassword
                 }
             }
             maven {
                 name = "centralRelease"
                 url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
                 credentials {
-                    username = System.getenv("SONATYPE_MAVEN_CENTRAL_USERNAME")
-                    password = System.getenv("SONATYPE_MAVEN_CENTRAL_PASSWORD")
+                    username = mavenCentralUserName
+                    password = mavenCentralPassword
                 }
             }
+        }
+    }
+}
+
+// https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/#configuring-the-repository
+tasks.register("notifyCentralReleaseRepository") {
+    mustRunAfter("publishReleasePublicationToCentralReleaseRepository")
+    group = "publishing"
+    description = "Notifies central repository that a new release was published using staging API"
+
+    doLast {
+        val url = "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/"
+        val authToken = Base64.encode(
+            "$mavenCentralUserName:$mavenCentralPassword".encodeToByteArray()
+        )
+        val httpClient = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(20))
+            .build()
+
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create("$url$mavenGroupId?publishing_type=automatic"))
+            .header("Authorization", "Bearer $authToken")
+            .POST(HttpRequest.BodyPublishers.noBody())
+            .build()
+
+        val response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            .join()
+        when (response.statusCode()) {
+            in 200..299 -> logger.warn("Successfully uploaded release to central repository")
+            else -> throw Exception("[${response.statusCode()}]: ${response.body()}")
         }
     }
 }
