@@ -121,7 +121,7 @@ jobs:
         overwrite: true
 
     - name: Publish library package
-      run: ./gradlew --warning-mode all --no-build-cache publishReleasePublicationToCentralReleaseRepository
+      run: ./gradlew --warning-mode all --no-build-cache publishReleasePublicationToCentralReleaseRepository notifyCentralReleaseRepository
       env:
         PGP_SIGNING_KEY_ID: ${{ secrets.PGP_SIGNING_KEY_ID }}
         PGP_PRIVATE_SIGNING_KEY: ${{ secrets.PGP_PRIVATE_SIGNING_KEY }}
