@@ -57,7 +57,7 @@ The plugin also needs to be configured with the values shared by the Kotlin SDK 
 an example for a project hosted on the [public instance](https://hosted.weblate.org/projects/sandbox/kotlin-sdk/).
 
 As the plugin needs to access your private API key to publish generated metadata, you can configure it to be
-[read from the build enviornment](https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_environment_variables).
+[read from the build environment](https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_environment_variables).
 
 ```kotlin
 weblate {
