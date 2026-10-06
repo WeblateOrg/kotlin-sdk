@@ -60,6 +60,9 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set("${extension.serverUrl.get()}/api/components/${extension.project.get()}/${extension.component.get()}/addons/kotlin-sdk/builds/")
                     task.metadataDir.set(extension.metadataDir.dir(variant.name))
+                    task.versionCodes.set(variant.outputs.map { output ->
+                        output.versionCode.get()
+                    })
                 }
 
                 // Config generation task
