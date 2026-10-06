@@ -5,7 +5,7 @@
 
 [versions]
 # Version code for the plugin and library
-weblate = "1.0.0-alpha01"
+weblate = "1.0.0-alpha02"
 
 agp = "9.4.1"
 annotations = "1.11.0"
