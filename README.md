@@ -1,6 +1,8 @@
 # Module Kotlin SDK for Weblate
 
 [![Website](https://img.shields.io/badge/website-weblate.org-blue.svg)](https://weblate.org/)
+![Maven Central Version](https://img.shields.io/maven-central/v/org.weblate/android)
+![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/org.weblate.android)
 
 The Kotlin SDK for Weblate consists of a lightweight Gradle plugin and library for Android projects
 to support updating localizations without re-building and re-distributing the software binaries.
@@ -44,8 +46,8 @@ Check out [API documentation](https://docs.weblate.org/en/latest/admin/addons.ht
 
 ### 2) Setting up the Gradle plugin
 
-The plugin is published on the [Gradle plugin portal](https://plugins.gradle.org/) and can be set up
-using the plugins DSL:
+The plugin is published on the [Gradle plugin portal](https://plugins.gradle.org/plugin/org.weblate.android))
+and can be set up using the plugins DSL:
 
 ```kotlin
 plugins {
@@ -71,8 +73,8 @@ weblate {
 
 ### 3) Dependency on the library
 
-The library is published on the [maven central repository](https://central.sonatype.com/) and can be
-added to the project like this:
+The library is published on the [maven central repository](https://central.sonatype.com/artifact/org.weblate/android)
+and can be added to the project like this:
 
 ```kotlin
 dependencies {
