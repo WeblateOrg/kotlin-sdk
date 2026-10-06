@@ -13,6 +13,7 @@ import java.net.http.HttpResponse
 import java.time.Duration
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
@@ -33,6 +34,9 @@ internal abstract class UploadMetadataTask : DefaultTask() {
     @get:Input
     abstract val apiUrl: Property<String>
 
+    @get:Input
+    abstract val versionCodes: ListProperty<Int>
+
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val metadataDir: DirectoryProperty
@@ -46,6 +50,7 @@ internal abstract class UploadMetadataTask : DefaultTask() {
         val token = authToken.get()
         val url = apiUrl.get()
         val rootDir = metadataDir.get().asFile
+        val versions = versionCodes.get()
 
         if (!rootDir.exists() || !rootDir.isDirectory) {
             logger.warn("Invalid metadata directory: ${rootDir.absolutePath}")
@@ -53,7 +58,7 @@ internal abstract class UploadMetadataTask : DefaultTask() {
         }
 
         val versionDirectories = rootDir.listFiles()?.filter { file ->
-            file.isDirectory && file.name.all { it.isDigit() }
+            file.isDirectory && file.name.all { it.isDigit() } && file.name.toInt() in versions
         }.orEmpty()
 
         if (versionDirectories.isEmpty()) {
