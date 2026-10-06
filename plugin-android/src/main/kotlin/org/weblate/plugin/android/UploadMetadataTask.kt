@@ -20,6 +20,7 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.json.JSONObject
 import org.weblate.plugin.android.Constants.FILE_METADATA
 
 /**
@@ -53,20 +54,24 @@ internal abstract class UploadMetadataTask : DefaultTask() {
         val versions = versionCodes.get()
 
         if (!rootDir.exists() || !rootDir.isDirectory) {
-            logger.warn("Invalid metadata directory: ${rootDir.absolutePath}")
-            return
+            throw Exception("Invalid metadata directory: ${rootDir.absolutePath}")
         }
 
         val versionDirectories = rootDir.listFiles()?.filter { file ->
             file.isDirectory && file.name.all { it.isDigit() } && file.name.toInt() in versions
         }.orEmpty()
 
-        if (versionDirectories.isEmpty()) {
-            logger.warn("No version code subdirectories found in ${rootDir.absolutePath}")
-            return
+        val versionMetadataFiles = versionDirectories.mapNotNull { dir ->
+            val file = File(dir, FILE_METADATA)
+            if (file.exists()) file else null
+        }
+
+        if (versionMetadataFiles.isEmpty()) {
+            throw Exception("No metadata file found to publish in ${rootDir.absolutePath}")
         }
 
         versionDirectories.forEach { directory ->
+            val version = directory.name
             val payload = File(directory, FILE_METADATA).readText()
             val request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -76,12 +81,15 @@ internal abstract class UploadMetadataTask : DefaultTask() {
                 .POST(HttpRequest.BodyPublishers.ofString(payload))
                 .build()
 
-            logger.warn("Uploading metadata to Weblate")
-            val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
+            logger.warn("[WARNING]: Uploading metadata for version:$version")
+            val response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .join()
+
             when (response.statusCode()) {
-                200, 202 -> logger.warn("Successfully uploaded metadata to Weblate")
-                409 -> logger.error("Metadata already exists! Did you forget to increase version code?")
-                else -> logger.error("Got an unexpected response: ${response.body()}")
+                200 -> logger.warn("[WARNING]: Found existing identical metadata for version:$version")
+                202 -> logger.warn("[WARNING]: Successfully uploaded metadata for version:$version")
+                409 -> throw Exception("[ERROR]: Found conflicting metadata for version:${directory.name}!")
+                else -> throw Exception(JSONObject(response.body()).toString(2))
             }
         }
     }
