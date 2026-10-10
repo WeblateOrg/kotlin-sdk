@@ -9,7 +9,7 @@ agp = "9.4.1"
 compat = "1.8.0"
 composeBom = "2026.09.00"
 core = "1.19.1"
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 lifecycle = "2.11.0"
 weblate = "+"
 
