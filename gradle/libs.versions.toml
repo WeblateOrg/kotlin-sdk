@@ -13,7 +13,7 @@ coroutines = "1.11.0"
 dokka = "2.2.0"
 gradle = "2.2.1"
 json = "20260814"
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 
 [libraries]
 android-gradle-plugin-api = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
