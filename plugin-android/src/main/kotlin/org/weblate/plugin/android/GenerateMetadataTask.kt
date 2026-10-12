@@ -19,8 +19,6 @@ import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.json.JSONObject
 import org.weblate.plugin.android.Constants.FILE_METADATA
-import org.weblate.plugin.android.model.Metadata
-import org.weblate.plugin.android.model.Resource
 
 /**
  * Task to generate metadata in JSON format to help Weblate server generate required files
@@ -42,7 +40,7 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
     abstract val outputDir: DirectoryProperty
 
     @TaskAction
-    fun parse() {
+    fun generateMetadata() {
         val rFile = rFile.get().asFile
         val metadataDir = outputDir.get().asFile
         val resources = parseResourceIdsFromRTxt(rFile)
@@ -51,21 +49,20 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
             val versionDir = metadataDir.resolve(versionCode.toString()).apply { mkdirs() }
             val outputJsonFile = versionDir.resolve(FILE_METADATA)
 
-            val result = Metadata(
-                packageName = packageName.get(),
-                versionCode = versionCode,
-                strings = resources.getValue(Resource.STRING),
-                plurals = resources.getValue(Resource.PLURAL)
-            )
+            val json = JSONObject()
+                .put("packageName", packageName.get())
+                .put("versionCode", versionCode)
+                .put("strings", resources.getValue("strings"))
+                .put("plurals", resources.getValue("plurals"))
 
             outputJsonFile.apply {
                 parentFile.mkdirs()
-                writeText(JSONObject(result).toString())
+                writeText(json.toString(2))
             }
         }
     }
 
-    private fun parseResourceIdsFromRTxt(file: File): Map<Resource, Map<String, String>> {
+    private fun parseResourceIdsFromRTxt(file: File): Map<String, Map<String, String>> {
         val stringMap = mutableMapOf<String, String>()
         val pluralMap = mutableMapOf<String, String>()
 
@@ -78,14 +75,19 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
                     val resourceId = tokens[3]
 
                     when (resourceType) {
-                        Resource.STRING.id -> stringMap[key] = resourceId
-                        Resource.PLURAL.id -> pluralMap[key] = resourceId
+                        "string" -> stringMap[key] = resourceId
+                        "plurals" -> pluralMap[key] = resourceId
                     }
                 }
             }
         }
 
-        return mapOf(Resource.STRING to stringMap, Resource.PLURAL to pluralMap)
+        // There is nothing to translate, is this even possible?
+        require(stringMap.isNotEmpty() || pluralMap.isNotEmpty()) {
+            "Unable to find any string or plurals keys to put in JSON metadata"
+        }
+
+        return mapOf("strings" to stringMap, "plurals" to pluralMap)
     }
 
     companion object {

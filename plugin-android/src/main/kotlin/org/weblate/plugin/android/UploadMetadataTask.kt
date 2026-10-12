@@ -43,36 +43,20 @@ internal abstract class UploadMetadataTask : DefaultTask() {
     abstract val metadataDir: DirectoryProperty
 
     @TaskAction
-    fun upload() {
+    fun uploadMetadata() {
         val httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(20))
             .build()
 
         val token = authToken.get()
         val url = apiUrl.get()
-        val rootDir = metadataDir.get().asFile
-        val versions = versionCodes.get()
 
-        if (!rootDir.exists() || !rootDir.isDirectory) {
-            throw Exception("Invalid metadata directory: ${rootDir.absolutePath}")
-        }
+        validateAndGetMetadataDirs(metadataDir.get().asFile, versionCodes.get()).forEach { dir ->
+            val version = dir.name
+            val payload = File(dir, FILE_METADATA).readText()
 
-        val versionDirectories = rootDir.listFiles()?.filter { file ->
-            file.isDirectory && file.name.all { it.isDigit() } && file.name.toInt() in versions
-        }.orEmpty()
+            validateJson(JSONObject(payload))
 
-        val versionMetadataFiles = versionDirectories.mapNotNull { dir ->
-            val file = File(dir, FILE_METADATA)
-            if (file.exists()) file else null
-        }
-
-        if (versionMetadataFiles.isEmpty()) {
-            throw Exception("No metadata file found to publish in ${rootDir.absolutePath}")
-        }
-
-        versionDirectories.forEach { directory ->
-            val version = directory.name
-            val payload = File(directory, FILE_METADATA).readText()
             val request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .timeout(Duration.ofSeconds(20))
@@ -86,12 +70,46 @@ internal abstract class UploadMetadataTask : DefaultTask() {
                 .join()
 
             when (response.statusCode()) {
-                200 -> logger.warn("[WARNING]: Found existing identical metadata for version:$version")
+                200 -> logger.warn("[WARNING]: Found identical metadata for version:$version")
                 202 -> logger.warn("[WARNING]: Successfully uploaded metadata for version:$version")
-                409 -> throw Exception("[ERROR]: Found conflicting metadata for version:${directory.name}!")
-                else -> throw Exception(JSONObject(response.body()).toString(2))
+                409 -> error("[ERROR]: Found conflicting metadata for version:${dir.name}!")
+                else -> error(JSONObject(response.body()).toString(2))
             }
         }
+    }
+
+    private fun validateJson(json: JSONObject) {
+        val requiredKeys = listOf("packageName", "versionCode", "strings", "plurals")
+        val translationKeys = listOf("strings", "plurals")
+        requiredKeys.forEach { key ->
+            require(json.has(key)) { "JSON metadata is missing $key" }
+        }
+
+        // If there is nothing to translate, why even bother?
+        require(!translationKeys.all { key -> json.getJSONObject(key).isEmpty }) {
+            "Unable to find any string or plurals keys in JSON metadata"
+        }
+    }
+
+    private fun validateAndGetMetadataDirs(rootDir: File, versions: List<Int>): List<File> {
+        require(rootDir.exists() && rootDir.isDirectory) {
+            "Invalid metadata directory: ${rootDir.absolutePath}"
+        }
+
+        val versionDirectories = rootDir.listFiles()?.filter { file ->
+            file.isDirectory && file.name.all { it.isDigit() } && file.name.toInt() in versions
+        }.orEmpty()
+
+        val versionMetadataFiles = versionDirectories.mapNotNull { dir ->
+            val file = File(dir, FILE_METADATA)
+            if (file.exists()) file else null
+        }
+
+        require(versionMetadataFiles.isNotEmpty()) {
+            "No metadata file found to publish in ${rootDir.absolutePath}"
+        }
+
+        return versionDirectories
     }
 
     companion object {
