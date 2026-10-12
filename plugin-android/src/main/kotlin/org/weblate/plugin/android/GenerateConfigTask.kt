@@ -26,7 +26,7 @@ internal abstract class GenerateConfigTask : DefaultTask() {
     abstract val outputDirectory: DirectoryProperty
 
     @TaskAction
-    fun generate() {
+    fun generateConfig() {
         val outputDir = outputDirectory.get().asFile
         val configClassPath = "org.weblate.android.ConfigProvider"
         val generatedClassName = "WeblateConfigProvider"
