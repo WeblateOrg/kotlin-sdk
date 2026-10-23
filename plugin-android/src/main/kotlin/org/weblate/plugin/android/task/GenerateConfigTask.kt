@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.weblate.plugin.android
+package org.weblate.plugin.android.task
 
 import java.io.File
 import org.gradle.api.DefaultTask
@@ -15,7 +15,7 @@ import org.gradle.api.tasks.TaskAction
 
 /**
  * Task to generate a config class to access values supplied to extension by library
- * @see WeblateAndroidPluginExtension
+ * @see org.weblate.plugin.android.extension.WeblateAndroidPluginExtension
  */
 internal abstract class GenerateConfigTask : DefaultTask() {
 
