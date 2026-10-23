@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.weblate.plugin.android
+package org.weblate.plugin.android.task
 
 import java.io.File
 import java.net.URI

@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.weblate.plugin.android
+package org.weblate.plugin.android.extension
 
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 
 /**
  * Extension to configure the Weblate Gradle plugin
- * @see GenerateConfigTask
+ * @see org.weblate.plugin.android.task.GenerateConfigTask
  */
 public interface WeblateAndroidPluginExtension {
     /**
