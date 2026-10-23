@@ -43,7 +43,9 @@ kotlin {
 configure<LibraryExtension> {
     namespace = "org.weblate.android"
     compileSdk {
-        version = release(37)
+        version = release(37) {
+            minorApiLevel = 2
+        }
     }
     defaultConfig {
         minSdk = 21
