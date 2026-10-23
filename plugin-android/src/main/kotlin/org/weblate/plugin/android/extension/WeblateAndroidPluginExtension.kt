@@ -5,14 +5,13 @@
 
 package org.weblate.plugin.android.extension
 
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 
 /**
- * Extension to configure the Weblate Gradle plugin
- * @see org.weblate.plugin.android.task.GenerateConfigTask
+ * Root extension to configure the Weblate Gradle plugin for the module/subproject
  */
 public interface WeblateAndroidPluginExtension {
+
     /**
      * Project URL slug, e.g. aurora-store
      */
@@ -34,12 +33,7 @@ public interface WeblateAndroidPluginExtension {
     public val serverUrl: Property<String>
 
     /**
-     * Path to output/input metadata file for Weblate, `defaults to build/output/weblate`
+     * Configuration for Kotlin-SDK
      */
-    public val metadataDir: DirectoryProperty
-
-    /**
-     * URL of the CDN server
-     */
-    public val cdnUrl: Property<String>
+    public val sdk: WeblateKotlinSDKExtension
 }
