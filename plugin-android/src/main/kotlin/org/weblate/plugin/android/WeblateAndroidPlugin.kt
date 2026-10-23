@@ -10,6 +10,10 @@ import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.gradle.AppPlugin
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.weblate.plugin.android.extension.WeblateAndroidPluginExtension
+import org.weblate.plugin.android.task.GenerateConfigTask
+import org.weblate.plugin.android.task.GenerateMetadataTask
+import org.weblate.plugin.android.task.UploadMetadataTask
 
 /**
  * Plugin for android applications that introduces some useful tasks to localize with Weblate

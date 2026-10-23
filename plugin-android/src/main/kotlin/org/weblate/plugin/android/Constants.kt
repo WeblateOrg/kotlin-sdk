@@ -12,5 +12,8 @@ internal object Constants {
      */
     const val WEBLATE_TASK_GROUP = "weblate"
 
+    /**
+     * File name for the JSON metadata
+     */
     const val FILE_METADATA = "org.weblate.metadata.json"
 }
