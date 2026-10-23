@@ -30,14 +30,22 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                 .getByType(ApplicationAndroidComponentsExtension::class.java)
 
             // Default configuration for extension
-            extension.metadataDir.convention(
-                project.layout.buildDirectory.dir("outputs/weblate/")
+            val apiUrl = extension.serverUrl
+                .zip(extension.project) { server, project -> server to project }
+                .zip(extension.component) { (server, project), component ->
+                    "$server/api/components/$project/$component/addons/kotlin-sdk/builds/"
+                }
+
+            extension.sdk.metadataDir.convention(
+                project.layout.buildDirectory.dir("outputs/weblate/metadata/")
             )
 
             androidComponents.onVariants { variant ->
+                val variantName = variant.name.replaceFirstChar { it.uppercase() }
+
                 // Metadata generation task
                 val metadataTaskProvider = project.tasks.register(
-                    "generateMetadataForWeblate${variant.name.replaceFirstChar { it.uppercase() }}",
+                    "generateMetadataForWeblate$variantName",
                     GenerateMetadataTask::class.java
                 ) { task ->
                     task.group = Constants.WEBLATE_TASK_GROUP
@@ -46,7 +54,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.versionCodes.set(variant.outputs.map { output ->
                         output.versionCode.get()
                     })
-                    task.outputDir.set(extension.metadataDir.dir(variant.name))
+                    task.outputDir.set(extension.sdk.metadataDir.dir(variant.name))
                 }
 
                 variant.artifacts.use(metadataTaskProvider)
@@ -55,37 +63,39 @@ public class WeblateAndroidPlugin : Plugin<Project> {
 
                 // Metadata upload task
                 project.tasks.register(
-                    "uploadMetadataForWeblate${variant.name.replaceFirstChar { it.uppercase() }}",
+                    "uploadMetadataForWeblate$variantName",
                     UploadMetadataTask::class.java
                 ) { task ->
                     task.group = Constants.WEBLATE_TASK_GROUP
                     task.description = UploadMetadataTask.TASK_DESCRIPTION
                     task.dependsOn(metadataTaskProvider)
                     task.authToken.set(extension.authToken)
-                    task.apiUrl.set("${extension.serverUrl.get()}/api/components/${extension.project.get()}/${extension.component.get()}/addons/kotlin-sdk/builds/")
-                    task.metadataDir.set(extension.metadataDir.dir(variant.name))
+                    task.apiUrl.set(apiUrl)
+                    task.metadataDir.set(extension.sdk.metadataDir.dir(variant.name))
                     task.versionCodes.set(variant.outputs.map { output ->
                         output.versionCode.get()
                     })
                 }
 
                 // Config generation task
-                val configTaskProvider = project.tasks.register(
-                    "generateConfigForWeblate${variant.name.replaceFirstChar { it.uppercase() }}",
-                    GenerateConfigTask::class.java
-                ) { task ->
-                    task.cdnUrl.set(extension.cdnUrl)
+                if (extension.sdk.cdnUrl.isPresent) {
+                    val configTaskProvider = project.tasks.register(
+                        "generateConfigForWeblate$variantName",
+                        GenerateConfigTask::class.java
+                    ) { task ->
+                        task.cdnUrl.set(extension.sdk.cdnUrl)
+                    }
+
+                    variant.sources.resources?.addGeneratedSourceDirectory(
+                        configTaskProvider,
+                        GenerateConfigTask::outputDirectory
+                    )
+
+                    variant.sources.kotlin?.addGeneratedSourceDirectory(
+                        configTaskProvider,
+                        GenerateConfigTask::outputDirectory
+                    )
                 }
-
-                variant.sources.resources?.addGeneratedSourceDirectory(
-                    configTaskProvider,
-                    GenerateConfigTask::outputDirectory
-                )
-
-                variant.sources.kotlin?.addGeneratedSourceDirectory(
-                    configTaskProvider,
-                    GenerateConfigTask::outputDirectory
-                )
             }
         }
     }
