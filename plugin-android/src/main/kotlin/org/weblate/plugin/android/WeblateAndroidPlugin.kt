@@ -48,8 +48,6 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     "generateMetadataForWeblate$variantName",
                     GenerateMetadataTask::class.java
                 ) { task ->
-                    task.group = Constants.WEBLATE_TASK_GROUP
-                    task.description = GenerateMetadataTask.TASK_DESCRIPTION
                     task.packageName.set(variant.applicationId)
                     task.versionCodes.set(variant.outputs.map { output ->
                         output.versionCode.get()
@@ -66,8 +64,6 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     "uploadMetadataForWeblate$variantName",
                     UploadMetadataTask::class.java
                 ) { task ->
-                    task.group = Constants.WEBLATE_TASK_GROUP
-                    task.description = UploadMetadataTask.TASK_DESCRIPTION
                     task.dependsOn(metadataTaskProvider)
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set(apiUrl)
@@ -83,8 +79,6 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                         "generateConfigForWeblate$variantName",
                         GenerateConfigTask::class.java
                     ) { task ->
-                        task.group = Constants.WEBLATE_TASK_GROUP
-                        task.description = GenerateConfigTask.TASK_DESCRIPTION
                         task.cdnUrl.set(extension.sdk.cdnUrl)
                     }
 
