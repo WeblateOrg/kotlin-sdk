@@ -18,6 +18,7 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.json.JSONObject
+import org.weblate.plugin.android.Constants
 import org.weblate.plugin.android.Constants.FILE_METADATA
 
 /**
@@ -38,6 +39,11 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
 
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
+
+    init {
+        group = Constants.WEBLATE_TASK_GROUP
+        description = TASK_DESCRIPTION
+    }
 
     @TaskAction
     fun generateMetadata() {
@@ -91,7 +97,7 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
     }
 
     companion object {
-        const val TASK_DESCRIPTION = "Generates JSON metadata for Weblate"
+        private const val TASK_DESCRIPTION = "Generates JSON metadata for Weblate"
 
         val translationKeys = listOf(KEY_METADATA_STRINGS, KEY_METADATA_PLURALS)
         val requiredKeys = listOf(
