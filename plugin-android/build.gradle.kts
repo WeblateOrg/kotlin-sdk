@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import java.util.Properties
 import org.gradle.plugin.compatibility.compatibility
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -20,6 +21,39 @@ kotlin {
 dependencies {
     compileOnly(libs.android.gradle.plugin.api)
     implementation(libs.json)
+}
+
+// Custom logic to add AGP dependency to class path for testing
+val agpTestRuntime = configurations.resolvable("agpTestRuntime") {
+    extendsFrom(configurations.compileOnly)
+}
+
+val localProperties = Properties().apply {
+    val file = layout.projectDirectory.file("../local.properties").asFile
+    if (file.exists()) {
+        load(file.inputStream())
+    }
+}
+
+tasks.named<PluginUnderTestMetadata>("pluginUnderTestMetadata") {
+    pluginClasspath.from(agpTestRuntime)
+}
+
+testing {
+    suites {
+        named<JvmTestSuite>("test") {
+            useJUnitJupiter()
+
+            targets.all {
+                testTask.configure {
+                    environment(
+                        "ANDROID_HOME",
+                        System.getenv("ANDROID_HOME") ?: localProperties.getProperty("sdk.dir")
+                    )
+                }
+            }
+        }
+    }
 }
 
 gradlePlugin {
