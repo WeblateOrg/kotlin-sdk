@@ -83,6 +83,8 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                         "generateConfigForWeblate$variantName",
                         GenerateConfigTask::class.java
                     ) { task ->
+                        task.group = Constants.WEBLATE_TASK_GROUP
+                        task.description = GenerateConfigTask.TASK_DESCRIPTION
                         task.cdnUrl.set(extension.sdk.cdnUrl)
                     }
 
