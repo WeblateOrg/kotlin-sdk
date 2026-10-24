@@ -50,10 +50,10 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
             val outputJsonFile = versionDir.resolve(FILE_METADATA)
 
             val json = JSONObject()
-                .put("packageName", packageName.get())
-                .put("versionCode", versionCode)
-                .put("strings", resources.getValue("strings"))
-                .put("plurals", resources.getValue("plurals"))
+                .put(KEY_METADATA_PACKAGE_NAME, packageName.get())
+                .put(KEY_METADATA_VERSION_CODE, versionCode)
+                .put(KEY_METADATA_STRINGS, resources.getValue(KEY_METADATA_STRINGS))
+                .put(KEY_METADATA_PLURALS, resources.getValue(KEY_METADATA_PLURALS))
 
             outputJsonFile.apply {
                 parentFile.mkdirs()
@@ -75,8 +75,8 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
                     val resourceId = tokens[3]
 
                     when (resourceType) {
-                        "string" -> stringMap[key] = resourceId
-                        "plurals" -> pluralMap[key] = resourceId
+                        TYPE_RESOURCE_STRING -> stringMap[key] = resourceId
+                        TYPE_RESOURCE_PLURALS -> pluralMap[key] = resourceId
                     }
                 }
             }
@@ -87,10 +87,26 @@ internal abstract class GenerateMetadataTask : DefaultTask() {
             "Unable to find any string or plurals keys to put in JSON metadata"
         }
 
-        return mapOf("strings" to stringMap, "plurals" to pluralMap)
+        return mapOf(KEY_METADATA_STRINGS to stringMap, KEY_METADATA_PLURALS to pluralMap)
     }
 
     companion object {
         const val TASK_DESCRIPTION = "Generates JSON metadata for Weblate"
+
+        val translationKeys = listOf(KEY_METADATA_STRINGS, KEY_METADATA_PLURALS)
+        val requiredKeys = listOf(
+            KEY_METADATA_PACKAGE_NAME,
+            KEY_METADATA_VERSION_CODE,
+            KEY_METADATA_STRINGS,
+            KEY_METADATA_PLURALS
+        )
+
+        private const val KEY_METADATA_PACKAGE_NAME = "packageName"
+        private const val KEY_METADATA_VERSION_CODE = "versionCode"
+        private const val KEY_METADATA_STRINGS = "strings"
+        private const val KEY_METADATA_PLURALS = "plurals"
+
+        private const val TYPE_RESOURCE_STRING = "string"
+        private const val TYPE_RESOURCE_PLURALS = "plurals"
     }
 }

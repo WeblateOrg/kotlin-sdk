@@ -79,16 +79,14 @@ internal abstract class UploadMetadataTask : DefaultTask() {
     }
 
     private fun validateJson(json: JSONObject) {
-        val requiredKeys = listOf("packageName", "versionCode", "strings", "plurals")
-        val translationKeys = listOf("strings", "plurals")
-        requiredKeys.forEach { key ->
+        GenerateMetadataTask.requiredKeys.forEach { key ->
             require(json.has(key)) { "JSON metadata is missing $key" }
         }
 
         // If there is nothing to translate, why even bother?
-        require(!translationKeys.all { key -> json.getJSONObject(key).isEmpty }) {
-            "Unable to find any string or plurals keys in JSON metadata"
-        }
+        require(
+            !GenerateMetadataTask.translationKeys.all { key -> json.getJSONObject(key).isEmpty }
+        ) { "Unable to find any string or plurals keys in JSON metadata" }
     }
 
     private fun validateAndGetMetadataDirs(rootDir: File, versions: List<Int>): List<File> {
