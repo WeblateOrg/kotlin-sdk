@@ -5,7 +5,9 @@
 
 package org.weblate.plugin.android.extension
 
+import org.gradle.api.Action
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Nested
 
 /**
  * Root extension to configure the Weblate Gradle plugin for the module/subproject
@@ -33,7 +35,15 @@ public interface WeblateAndroidPluginExtension {
     public val serverUrl: Property<String>
 
     /**
-     * Configuration for Kotlin-SDK
+     * Kotlin-SDK extension instance
      */
+    @get:Nested
     public val sdk: WeblateKotlinSDKExtension
+
+    /**
+     * Configuration block for Kotlin-SDK
+     */
+    public fun sdk(action: Action<WeblateKotlinSDKExtension>) {
+        action.execute(sdk)
+    }
 }

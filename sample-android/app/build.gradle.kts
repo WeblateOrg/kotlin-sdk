@@ -88,11 +88,13 @@ androidComponents {
     }
 }
 
-
 weblate {
     serverUrl = "https://hosted.weblate.org"
-    cdnUrl = "https://weblate-cdn.com/311793d2229548828ed13fa70e34935a"
     authToken = "INSERT_TOKEN_HERE"
     project = "sandbox"
     component = "kotlin-sdk"
+
+    sdk {
+        cdnUrl = "https://weblate-cdn.com/311793d2229548828ed13fa70e34935a"
+    }
 }
