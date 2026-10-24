@@ -12,6 +12,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.weblate.plugin.android.Constants
 
 /**
  * Task to generate a config class to access values supplied to extension by library
@@ -24,6 +25,11 @@ internal abstract class GenerateConfigTask : DefaultTask() {
 
     @get:OutputDirectory
     abstract val outputDirectory: DirectoryProperty
+
+    init {
+        group = Constants.WEBLATE_TASK_GROUP
+        description = TASK_DESCRIPTION
+    }
 
     @TaskAction
     fun generateConfig() {
@@ -57,7 +63,7 @@ internal abstract class GenerateConfigTask : DefaultTask() {
     }
 
     companion object {
-        const val TASK_DESCRIPTION = "Generates a build config class for Weblate"
+        private const val TASK_DESCRIPTION = "Generates a build config class for Weblate"
 
         private const val NAME_CLASS_GENERATED = "WeblateConfigProvider"
         private const val NAME_PACKAGE_GENERATED = "org.weblate.android.generated"

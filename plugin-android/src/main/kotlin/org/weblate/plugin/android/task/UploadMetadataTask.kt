@@ -21,6 +21,7 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.json.JSONObject
+import org.weblate.plugin.android.Constants
 import org.weblate.plugin.android.Constants.FILE_METADATA
 
 /**
@@ -41,6 +42,11 @@ internal abstract class UploadMetadataTask : DefaultTask() {
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val metadataDir: DirectoryProperty
+
+    init {
+        group = Constants.WEBLATE_TASK_GROUP
+        description = TASK_DESCRIPTION
+    }
 
     @TaskAction
     fun uploadMetadata() {
@@ -111,6 +117,6 @@ internal abstract class UploadMetadataTask : DefaultTask() {
     }
 
     companion object {
-        const val TASK_DESCRIPTION = "Uploads JSON metadata to Weblate"
+        private const val TASK_DESCRIPTION = "Uploads JSON metadata to Weblate"
     }
 }
