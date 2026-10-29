@@ -82,24 +82,25 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                 }
 
                 // Config generation task
-                if (extension.kotlinSdk.cdnUrl.isPresent) {
-                    val configTaskProvider = project.tasks.register(
-                        "generateConfigForWeblate$variantName",
-                        GenerateConfigTask::class.java
-                    ) { task ->
-                        task.cdnUrl.set(extension.kotlinSdk.cdnUrl)
+                val configTaskProvider = project.tasks.register(
+                    "generateConfigForWeblate$variantName",
+                    GenerateConfigTask::class.java
+                ) { task ->
+                    task.onlyIf("No Kotlin SDK CDN URL was present") {
+                        extension.kotlinSdk.cdnUrl.isPresent
                     }
-
-                    variant.sources.resources?.addGeneratedSourceDirectory(
-                        configTaskProvider,
-                        GenerateConfigTask::outputDirectory
-                    )
-
-                    variant.sources.kotlin?.addGeneratedSourceDirectory(
-                        configTaskProvider,
-                        GenerateConfigTask::outputDirectory
-                    )
+                    task.cdnUrl.set(extension.kotlinSdk.cdnUrl)
                 }
+
+                variant.sources.resources?.addGeneratedSourceDirectory(
+                    configTaskProvider,
+                    GenerateConfigTask::outputDirectory
+                )
+
+                variant.sources.kotlin?.addGeneratedSourceDirectory(
+                    configTaskProvider,
+                    GenerateConfigTask::outputDirectory
+                )
             }
 
             // Update translation files task
