@@ -35,15 +35,28 @@ public interface WeblateAndroidPluginExtension {
     public val serverUrl: Property<String>
 
     /**
-     * Kotlin-SDK extension instance
+     * Kotlin-SDK (Add-on) instance
      */
     @get:Nested
-    public val sdk: WeblateKotlinSDKExtension
+    public val kotlinSdk: WeblateKotlinSDKExtension
 
     /**
-     * Configuration block for Kotlin-SDK
+     * Configuration block for Kotlin-SDK (Add-on)
      */
-    public fun sdk(action: Action<WeblateKotlinSDKExtension>) {
-        action.execute(sdk)
+    public fun kotlinSdk(action: Action<WeblateKotlinSDKExtension>) {
+        action.execute(kotlinSdk)
+    }
+
+    /**
+     * Translation files (Add-on) instance
+     */
+    @get:Nested
+    public val translationFiles: WeblateTranslationFilesExtension
+
+    /**
+     * Configuration block for translation files (Add-on)
+     */
+    public fun translationFiles(action: Action<WeblateTranslationFilesExtension>) {
+        action.execute(translationFiles)
     }
 }

@@ -94,7 +94,11 @@ weblate {
     project = "sandbox"
     component = "kotlin-sdk"
 
-    sdk {
+    translationFiles {
+        cdnUrl = "https://weblate-cdn.com/d1ec9b7dea07467da31b525f7f73d36a"
+    }
+
+    kotlinSdk {
         cdnUrl = "https://weblate-cdn.com/311793d2229548828ed13fa70e34935a"
     }
 }
