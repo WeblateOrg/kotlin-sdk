@@ -9,7 +9,7 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 
 /**
- * Extension to configure values for Kotlin SDK
+ * Extension to configure values for Kotlin SDK (Add-on)
  */
 public interface WeblateKotlinSDKExtension {
 
@@ -19,7 +19,7 @@ public interface WeblateKotlinSDKExtension {
     public val metadataDir: DirectoryProperty
 
     /**
-     * URL of the CDN server
+     * URL of the Kotlin SDK CDN server
      */
     public val cdnUrl: Property<String>
 }

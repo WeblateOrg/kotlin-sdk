@@ -13,6 +13,7 @@ import org.gradle.api.Project
 import org.weblate.plugin.android.extension.WeblateAndroidPluginExtension
 import org.weblate.plugin.android.task.GenerateConfigTask
 import org.weblate.plugin.android.task.GenerateMetadataTask
+import org.weblate.plugin.android.task.DownloadTranslationFilesTask
 import org.weblate.plugin.android.task.UploadMetadataTask
 
 /**
@@ -33,12 +34,19 @@ public class WeblateAndroidPlugin : Plugin<Project> {
             val apiUrl = extension.serverUrl
                 .zip(extension.project) { server, project -> server to project }
                 .zip(extension.component) { (server, project), component ->
-                    "$server/api/components/$project/$component/addons/kotlin-sdk/builds/"
+                    val host = server.removeSuffix("/")
+                    "$host/api/components/$project/$component/addons/kotlin-sdk/builds/"
                 }
 
-            extension.sdk.metadataDir.convention(
-                project.layout.buildDirectory.dir("outputs/weblate/metadata/")
-            )
+            extension.apply {
+                kotlinSdk.metadataDir.convention(
+                    project.layout.buildDirectory.dir("outputs/weblate/metadata/")
+                )
+
+                translationFiles.outputDir.convention(
+                    project.layout.projectDirectory.dir("src/main/res/")
+                )
+            }
 
             androidComponents.onVariants { variant ->
                 val variantName = variant.name.replaceFirstChar { it.uppercase() }
@@ -52,7 +60,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.versionCodes.set(variant.outputs.map { output ->
                         output.versionCode.get()
                     })
-                    task.outputDir.set(extension.sdk.metadataDir.dir(variant.name))
+                    task.outputDir.set(extension.kotlinSdk.metadataDir.dir(variant.name))
                 }
 
                 variant.artifacts.use(metadataTaskProvider)
@@ -67,19 +75,19 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     task.dependsOn(metadataTaskProvider)
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set(apiUrl)
-                    task.metadataDir.set(extension.sdk.metadataDir.dir(variant.name))
+                    task.metadataDir.set(extension.kotlinSdk.metadataDir.dir(variant.name))
                     task.versionCodes.set(variant.outputs.map { output ->
                         output.versionCode.get()
                     })
                 }
 
                 // Config generation task
-                if (extension.sdk.cdnUrl.isPresent) {
+                if (extension.kotlinSdk.cdnUrl.isPresent) {
                     val configTaskProvider = project.tasks.register(
                         "generateConfigForWeblate$variantName",
                         GenerateConfigTask::class.java
                     ) { task ->
-                        task.cdnUrl.set(extension.sdk.cdnUrl)
+                        task.cdnUrl.set(extension.kotlinSdk.cdnUrl)
                     }
 
                     variant.sources.resources?.addGeneratedSourceDirectory(
@@ -92,6 +100,15 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                         GenerateConfigTask::outputDirectory
                     )
                 }
+            }
+
+            // Update translation files task
+            project.tasks.register(
+                "downloadTranslationFilesFromWeblate",
+                DownloadTranslationFilesTask::class.java
+            ) { task ->
+                task.cdnUrl.set(extension.translationFiles.cdnUrl)
+                task.outputDir.set(extension.translationFiles.outputDir)
             }
         }
     }
