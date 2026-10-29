@@ -73,6 +73,9 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     UploadMetadataTask::class.java
                 ) { task ->
                     task.dependsOn(metadataTaskProvider)
+                    task.onlyIf("Valid API URL and auth token is needed to upload metadata") {
+                        extension.authToken.isPresent && apiUrl.isPresent
+                    }
                     task.authToken.set(extension.authToken)
                     task.apiUrl.set(apiUrl)
                     task.metadataDir.set(extension.kotlinSdk.metadataDir.dir(variant.name))
@@ -86,7 +89,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
                     "generateConfigForWeblate$variantName",
                     GenerateConfigTask::class.java
                 ) { task ->
-                    task.onlyIf("No Kotlin SDK CDN URL was present") {
+                    task.onlyIf("CDN URL for Kotlin SDK is needed to generate config") {
                         extension.kotlinSdk.cdnUrl.isPresent
                     }
                     task.cdnUrl.set(extension.kotlinSdk.cdnUrl)
