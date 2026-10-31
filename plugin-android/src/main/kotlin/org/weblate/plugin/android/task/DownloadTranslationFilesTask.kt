@@ -70,17 +70,19 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
 
     private fun downloadTranslationFiles(manifest: JSONObject, url: String, resDir: File) {
         val locales = manifest.getJSONObject("locales")
-        if (locales.isEmpty) {
-            logger.warn("[WARNING]: No translation files available to download")
-            return
-        }
-
         val excludedLocales = excludedLocales.get()
+
         if (excludedLocales.isNotEmpty()) {
             logger.warn("[WARNING]: Skipping following locales from download: $excludedLocales")
         }
 
-        locales.keySet().filter { locale -> locale !in excludedLocales }.forEach { locale ->
+        val filteredLocales = locales.keySet().filter { locale -> locale !in excludedLocales }
+        if (filteredLocales.isEmpty()) {
+            logger.warn("[WARNING]: No translation files available to download")
+            return
+        }
+
+        filteredLocales.forEach { locale ->
             val files = locales.getJSONArray(locale)
 
             // Can there be multiple translation files for one locale?
