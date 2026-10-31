@@ -51,15 +51,16 @@ public class Weblate(
         context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
     private val resourcesDir: File
-        get() = File(weblateDir, "$DIR_RESOURCES/$versionCode")
+        get() = File(weblateDir, DIR_RESOURCES)
 
     private val resourceFile: File
-        get() = File(resourcesDir, FILE_RESOURCES)
+        get() = File(resourcesDir, "$versionCode/$FILE_RESOURCES")
 
     private var resourceProvider: ResourcesProvider? = null
 
     init {
         resourcesDir.mkdirs()
+        deleteOldResources()
         context.resources.addLoaders(resourcesLoader)
         loadResourcesIfExists()
     }
@@ -162,6 +163,13 @@ public class Weblate(
                 null
             ).also { provider -> resourcesLoader.addProvider(provider) }
         }
+    }
+
+    private fun deleteOldResources() {
+        Log.i(TAG, "Deleting old weblate resources")
+        resourcesDir.listFiles()
+            ?.filter { file -> file.isDirectory && file.name != versionCode.toString() }
+            ?.forEach { file -> file.deleteRecursively() }
     }
 
     /**
