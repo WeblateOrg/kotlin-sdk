@@ -29,10 +29,14 @@ import org.weblate.android.service.WeblateJobService
 
 /**
  * Primary way to interact with the Weblate library.
+ * @param context Context from Android, preferably ApplicationContext
+ * @param weblateDir Directory where the configuration is stored, defaults to app's internal storage
  */
 @RequiresApi(Build.VERSION_CODES.R)
-public class Weblate(private val context: Context) {
-
+public class Weblate(
+    private val context: Context,
+    private val weblateDir: File = File(context.filesDir, DIR_WEBLATE)
+) {
     private val TAG = Weblate::class.java.simpleName
 
     // TODO: Generate it in WeblateConfig
@@ -43,9 +47,6 @@ public class Weblate(private val context: Context) {
 
     private val jobScheduler =
         context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-
-    private val weblateDir: File
-        get() = File(context.filesDir, DIR_WEBLATE)
 
     private val resourcesDir: File
         get() = File(weblateDir, "$DIR_RESOURCES/$versionCode")
