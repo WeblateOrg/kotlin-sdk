@@ -6,6 +6,7 @@
 package org.weblate.plugin.android.extension
 
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
 /**
@@ -14,7 +15,7 @@ import org.gradle.api.provider.Property
 public interface WeblateTranslationFilesExtension {
 
     /**
-     * Path to output downloaded translation files from Weblate, `defaults to src/main/res`
+     * Path to output downloaded translation files from Weblate, defaults to `src/main/res`
      */
     public val outputDir: DirectoryProperty
 
@@ -22,4 +23,9 @@ public interface WeblateTranslationFilesExtension {
      * URL of the translation files CDN server
      */
     public val cdnUrl: Property<String>
+
+    /**
+     * Language codes to skip downloading
+     */
+    public val excludedLocales: ListProperty<String>
 }

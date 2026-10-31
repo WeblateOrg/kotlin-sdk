@@ -13,6 +13,7 @@ import java.net.http.HttpResponse
 import java.time.Duration
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
@@ -24,6 +25,9 @@ import org.weblate.plugin.android.Constants
  * Task to download translation files published by CDN Add-on on the Weblate server
  */
 internal abstract class DownloadTranslationFilesTask : DefaultTask() {
+
+    @get:Input
+    abstract val excludedLocales: ListProperty<String>
 
     @get:Input
     abstract val cdnUrl: Property<String>
@@ -70,11 +74,16 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
             return
         }
 
+        val excludedLocales = excludedLocales.get()
+        if (excludedLocales.isNotEmpty()) {
+            logger.warn("[WARNING]: Skipping following locales from download: $excludedLocales")
+        }
+
         val httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(20))
             .build()
 
-        locales.keySet().forEach { locale ->
+        locales.keySet().filter { locale -> locale !in excludedLocales }.forEach { locale ->
             val files = locales.getJSONArray(locale)
 
             // Can there be multiple translation files for one locale?
