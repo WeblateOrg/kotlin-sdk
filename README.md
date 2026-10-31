@@ -51,7 +51,7 @@ and can be set up using the plugins DSL:
 
 ```kotlin
 plugins {
-    id("org.weblate.android") version "1.0.0-alpha01"
+    id("org.weblate.android") version "<latest_tag>"
 }
 ```
 
@@ -64,10 +64,13 @@ As the plugin needs to access your private API key to publish generated metadata
 ```kotlin
 weblate {
     serverUrl = "https://hosted.weblate.org"
-    cdnUrl = "https://weblate-cdn.com/c6e2de08693e4fb8bba1ecfae9a8cfd9"
     authToken = "INSERT_TOKEN_HERE" // Replace this value to be read from build environment
     project = "sandbox"
     component = "kotlin-sdk"
+
+    kotlinSdk {
+      cdnUrl = "https://weblate-cdn.com/311793d2229548828ed13fa70e34935a"
+    }
 }
 ```
 
@@ -78,7 +81,7 @@ and can be added to the project like this:
 
 ```kotlin
 dependencies {
-    implementation("org.weblate:android:1.0.0-alpha01")
+    implementation("org.weblate:android:<latest_tag>")
 }
 ```
 
