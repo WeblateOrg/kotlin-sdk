@@ -15,6 +15,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.PathSensitive
@@ -23,6 +24,7 @@ import org.gradle.api.tasks.TaskAction
 import org.json.JSONObject
 import org.weblate.plugin.android.Constants
 import org.weblate.plugin.android.Constants.FILE_METADATA
+import org.weblate.plugin.android.Constants.httpClient
 
 /**
  * Task to upload metadata file to Weblate server
@@ -43,6 +45,8 @@ internal abstract class UploadMetadataTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val metadataDir: DirectoryProperty
 
+    private val httpClient: Provider<HttpClient> = project.provider { httpClient() }
+
     init {
         group = Constants.WEBLATE_TASK_GROUP
         description = TASK_DESCRIPTION
@@ -50,10 +54,6 @@ internal abstract class UploadMetadataTask : DefaultTask() {
 
     @TaskAction
     fun uploadMetadata() {
-        val httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(20))
-            .build()
-
         val token = authToken.get()
         val url = apiUrl.get()
 
@@ -72,7 +72,8 @@ internal abstract class UploadMetadataTask : DefaultTask() {
                 .build()
 
             logger.warn("[WARNING]: Uploading metadata for version:$version")
-            val response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            val response = httpClient.get()
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .join()
 
             when (response.statusCode()) {

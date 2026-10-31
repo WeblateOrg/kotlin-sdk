@@ -5,6 +5,9 @@
 
 package org.weblate.plugin.android
 
+import java.net.http.HttpClient
+import java.time.Duration
+
 internal object Constants {
 
     /**
@@ -16,4 +19,11 @@ internal object Constants {
      * File name for the JSON metadata
      */
     const val FILE_METADATA = "org.weblate.metadata.json"
+
+    /**
+     * HTTP client to make network requests
+     */
+    internal fun httpClient() = HttpClient.newBuilder()
+        .connectTimeout(Duration.ofSeconds(20))
+        .build()
 }
