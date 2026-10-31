@@ -15,11 +15,13 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.json.JSONObject
 import org.weblate.plugin.android.Constants
+import org.weblate.plugin.android.Constants.httpClient
 
 /**
  * Task to download translation files published by CDN Add-on on the Weblate server
@@ -35,6 +37,8 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
 
+    private val httpClient: Provider<HttpClient> = project.provider { httpClient() }
+
     init {
         group = Constants.WEBLATE_TASK_GROUP
         description = TASK_DESCRIPTION
@@ -45,10 +49,6 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
         val baseUrl = cdnUrl.get().removeSuffix("/")
         val resDir = outputDir.get().asFile
 
-        val httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(20))
-            .build()
-
         val manifestRequest = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl/$FILE_MANIFEST"))
             .timeout(Duration.ofSeconds(20))
@@ -57,7 +57,8 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
             .build()
 
         logger.warn("[WARNING]: Requesting manifest for translation files from CDN server")
-        val response = httpClient.sendAsync(manifestRequest, HttpResponse.BodyHandlers.ofString())
+        val response = httpClient.get()
+            .sendAsync(manifestRequest, HttpResponse.BodyHandlers.ofString())
             .join()
 
         val jsonResponse = JSONObject(response.body())
@@ -79,10 +80,6 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
             logger.warn("[WARNING]: Skipping following locales from download: $excludedLocales")
         }
 
-        val httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(20))
-            .build()
-
         locales.keySet().filter { locale -> locale !in excludedLocales }.forEach { locale ->
             val files = locales.getJSONArray(locale)
 
@@ -101,7 +98,8 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
                 .build()
 
             logger.warn("[WARNING]: Downloading translation file for $locale")
-            val response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+            val response = httpClient.get()
+                .sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .join()
 
             when (response.statusCode()) {
