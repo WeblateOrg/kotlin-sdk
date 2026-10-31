@@ -7,7 +7,6 @@ package org.weblate.plugin.android.task
 
 import java.io.File
 import java.net.URI
-import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
@@ -15,7 +14,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
@@ -37,8 +35,6 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
     @get:OutputDirectory
     abstract val outputDir: DirectoryProperty
 
-    private val httpClient: Provider<HttpClient> = project.provider { httpClient() }
-
     init {
         group = Constants.WEBLATE_TASK_GROUP
         description = TASK_DESCRIPTION
@@ -57,7 +53,7 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
             .build()
 
         logger.warn("[WARNING]: Requesting manifest for translation files from CDN server")
-        val response = httpClient.get()
+        val response = httpClient()
             .sendAsync(manifestRequest, HttpResponse.BodyHandlers.ofString())
             .join()
 
@@ -100,7 +96,7 @@ internal abstract class DownloadTranslationFilesTask : DefaultTask() {
                 .build()
 
             logger.warn("[WARNING]: Downloading translation file for $locale")
-            val response = httpClient.get()
+            val response = httpClient()
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .join()
 
