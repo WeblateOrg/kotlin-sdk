@@ -7,7 +7,6 @@ package org.weblate.plugin.android.task
 
 import java.io.File
 import java.net.URI
-import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.time.Duration
@@ -15,7 +14,6 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.PathSensitive
@@ -45,8 +43,6 @@ internal abstract class UploadMetadataTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val metadataDir: DirectoryProperty
 
-    private val httpClient: Provider<HttpClient> = project.provider { httpClient() }
-
     init {
         group = Constants.WEBLATE_TASK_GROUP
         description = TASK_DESCRIPTION
@@ -72,7 +68,7 @@ internal abstract class UploadMetadataTask : DefaultTask() {
                 .build()
 
             logger.warn("[WARNING]: Uploading metadata for version:$version")
-            val response = httpClient.get()
+            val response = httpClient()
                 .sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .join()
 
