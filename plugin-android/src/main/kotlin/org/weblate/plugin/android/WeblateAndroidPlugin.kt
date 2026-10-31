@@ -113,6 +113,7 @@ public class WeblateAndroidPlugin : Plugin<Project> {
             ) { task ->
                 task.cdnUrl.set(extension.translationFiles.cdnUrl)
                 task.outputDir.set(extension.translationFiles.outputDir)
+                task.excludedLocales.set(extension.translationFiles.excludedLocales)
             }
         }
     }
