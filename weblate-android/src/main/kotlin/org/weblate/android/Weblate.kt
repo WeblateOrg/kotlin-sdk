@@ -12,6 +12,7 @@ import android.content.Context
 import android.content.res.loader.ResourcesLoader
 import android.content.res.loader.ResourcesProvider
 import android.os.Build
+import android.os.ParcelFileDescriptor
 import android.util.Log
 import androidx.annotation.RequiresApi
 import java.io.File
@@ -45,6 +46,7 @@ public class Weblate(
         .getPackageInfo(packageName, 0)
         .longVersionCode
 
+    private val resourcesLoader = ResourcesLoader()
     private val jobScheduler =
         context.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
 
@@ -54,9 +56,12 @@ public class Weblate(
     private val resourceFile: File
         get() = File(resourcesDir, FILE_RESOURCES)
 
+    private var resourceProvider: ResourcesProvider? = null
+
     init {
         resourcesDir.mkdirs()
-        loadResources()
+        context.resources.addLoaders(resourcesLoader)
+        loadResourcesIfExists()
     }
 
     /**
@@ -150,12 +155,12 @@ public class Weblate(
      * Hooks weblate resources directory to application's resource loader for loading localization
      * updates
      */
-    private fun loadResources() {
-        ResourcesLoader().also { resourcesLoader ->
-            resourcesLoader.addProvider(
-                ResourcesProvider.loadFromDirectory(resourcesDir.path, null)
-            )
-            context.resources.addLoaders(resourcesLoader)
+    private fun loadResourcesIfExists() {
+        if (resourceFile.exists()) {
+            resourceProvider = ResourcesProvider.loadFromTable(
+                ParcelFileDescriptor.open(resourceFile, ParcelFileDescriptor.MODE_READ_ONLY),
+                null
+            ).also { provider -> resourcesLoader.addProvider(provider) }
         }
     }
 
@@ -183,8 +188,13 @@ public class Weblate(
                 // Validate hash to ensure file isn't corrupted
                 require(messageDigest.digest().toHexString() == fileName)
 
-                resourceFile.delete()
+                if (resourceFile.exists()) {
+                    resourceProvider?.let { provider -> resourcesLoader.removeProvider(provider) }
+                    resourceFile.delete()
+                }
+
                 tmpFile.renameTo(resourceFile)
+                loadResourcesIfExists()
             } catch (exception: Exception) {
                 Log.e(TAG, "Failed to download resources artifact", exception)
             } finally {
