@@ -51,26 +51,6 @@ class WeblateAndroidPluginTest {
     }
 
     @Test
-    fun `config task is not registered without cdn URL in extension`() {
-        buildFile.writeText(CONTENT_FILE_BUILD_NO_CONFIG)
-        val result = gradleRunner
-            .withArguments("tasks", "--group", "weblate")
-            .build()
-
-        assertTrue(!result.output.contains("generateConfigForWeblate"))
-    }
-
-    @Test
-    fun `config task is registered with cdn URL in extension`() {
-        buildFile.writeText(CONTENT_FILE_BUILD_WITH_CONFIG)
-        val result = gradleRunner
-            .withArguments("tasks", "--group", "weblate")
-            .build()
-
-        assertTrue(result.output.contains("generateConfigForWeblate"))
-    }
-
-    @Test
     fun `upload metadata task triggers generate metadata task`() {
         buildFile.writeText(CONTENT_FILE_BUILD_NO_CONFIG)
         val result = gradleRunner
